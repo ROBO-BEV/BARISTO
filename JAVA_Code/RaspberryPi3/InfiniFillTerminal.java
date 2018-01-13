@@ -21,21 +21,33 @@ public class InfiniFillTerminal {
 *
 * Based off a Java Scanner class from http://alvinalexander.com
 */
- public static void GetInput (String[] args){
-   // create a scanner so we can read the command-line input
-   Scanner scanner = new Scanner(System.in);
+ public static void GetUserInput (String[] args){
    
-   System.out.print("Which mode would you like to boot up in? (2 = PRODUCTION, 1 = FIELD, 0 = TESTING): ");
+   //Create a scanner so we can read the command-line input
+   Scanner scanner = new Scanner(System.in);
+
+   //Prompt user to enter kiosk boot up mode
+   System.out.print("Select boot mode (2 = PRODUCTION, 1 = FIELD, 0 = TESTING): ");
    int bootMode = scanner.nextInt(); // Get user input as a Integer
-
-   //Prompt for their age
-   System.out.print("What kiosk version are you connected to? (e.g. 0.1, 1.5, .99.42, etc");
-
-   // get the age as an double
+   if(bootMode < 0 || bootMode >2){
+   	 if(InfiniFill.DEBGUG_STATEMENTS_ON){
+       System.out.print("You entered an invalid boot mode, please try again.");
+   	   //TO-DO: KEEP LOOPING
+   	 }
+   }
+   
+   //Prompt user to enter version of hardware they are interacting with
+   System.out.print("Enter Kiosk hardware version (e.g. 1.5, 0.1, 0.42, etc): ");
    double verNum = scanner.nextDouble();
+   if(verNum < 0 || verNum > InfiniFill.CURRENT_KIOSK_HW_VERSION){
+   	 if(InfiniFill.DEBGUG_STATEMENTS_ON){
+       System.out.print("You entered an invalid kiosk hardware version number, please try again.");
+   	   //TO-DO: KEEP LOOPING
+   	 }
+   }
+   
 
-   System.out.println(String.format("Booting InfiniFill kiosk V %d in %d mode. ", verNum, bootMode));
+   //System.out.println(String.format("Booting InfiniFill kiosk V %d in %i mode. ", verNum, bootMode));
 
  }//END main() FUNCTION
-
 }//END JavaTerminal() CLASS

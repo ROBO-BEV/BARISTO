@@ -21,26 +21,20 @@ To run the code in JAVA_Code directory complete the following steps:
 
 ***
 
-***
 PLC_Code: 
 
 @link  http://velocio.net/embedded-plcs/
 
 ***
 
-***
 SPIN_Code: 
 
 @link https://iotplatform.att.com/solutions/asset-management
 
 ***
 
-***
 ARDUNO_Code:
 
 ***
 
-***
 CPP_Code:
-
-***

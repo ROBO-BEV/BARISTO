@@ -13,6 +13,8 @@
  */
 public class InfiniFill {
  
+public static boolean DEBGUG_STATEMENTS_ON = true;
+
 /**
  * @brief Program starts running from here 
  * @param args[] Command line program input arguments
@@ -22,7 +24,7 @@ public class InfiniFill {
    String inputArguments[] = {"2", "2.2"};
 
    System.out.println("InfiniFill kiosk starting up.");
-   InfiniFillTerminal.GetInput(inputArguments);
+   InfiniFillTerminal.GetUserInput(inputArguments);
    CongfigureInfiniFill(Integer.parseInt(inputArguments[0]), Double.parseDouble(inputArguments[1]));
    System.out.println("InfiniFill kiosk is now ready.");
    
@@ -30,8 +32,8 @@ public class InfiniFill {
      System.out.println("Good Morning, Jane. Please place your cup on the pad.");
      //TO-DO: errorCode = ScanRFID();
      System.out.println("One large coffee with light cream coming right up.");
-    //TO-DO: switch(errorCode) break;
-  }while (!programErrors); //END WHILE LOOP
+     //TO-DO: switch(errorCode) break;
+   }while (!programErrors); //END WHILE LOOP
  
  }//END main() FUNCTION
  
@@ -47,6 +49,9 @@ public class InfiniFill {
  //Velocio PLC Constants 
  public static final double ACE_1450 = 1450.0;
  public static final double BRANCH_1486v10 = 1486.10;
+
+ //Kiosk Constants
+ public static final double CURRENT_KIOSK_HW_VERSION = 0.1;
 
  
  /**
