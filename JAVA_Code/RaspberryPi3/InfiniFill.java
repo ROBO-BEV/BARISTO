@@ -1,8 +1,8 @@
 /**
- * @file InfiniFill.java
- * @author     Blaze Sanders (@ROBO_BEV)
- * @email       blaze@infinifill.com
- * @updated  10 JAN 2018
+ * @file     InfiniFill.java
+ * @author   Blaze Sanders (@ROBO_BEV)
+ * @email    blaze@infinifill.com
+ * @updated  13 JAN 2018
  *
  * @version 0.1
  * @brief Main driver program for the InfiniFill coffee kiosk
@@ -15,13 +15,15 @@ public class InfiniFill {
  
 /**
  * @brief Program starts running from here 
-  * @param args[] Command line program input arguments
+ * @param args[] Command line program input arguments
  */
  public static void main (String[] args){
    boolean programErrors = false;
- 
+   String inputArguments[] = {"2", "2.2"};
+
    System.out.println("InfiniFill kiosk starting up.");
-   //TO-DO: CongfigureInfiniFill();
+   InfiniFillTerminal.GetInput(inputArguments);
+   CongfigureInfiniFill(Integer.parseInt(inputArguments[0]), Double.parseDouble(inputArguments[1]));
    System.out.println("InfiniFill kiosk is now ready.");
    
    do {
@@ -29,13 +31,14 @@ public class InfiniFill {
      //TO-DO: errorCode = ScanRFID();
      System.out.println("One large coffee with light cream coming right up.");
     //TO-DO: switch(errorCode) break;
-  }while (!INFININFILL_ERROR.PROGRAM_CRASH); //END WHILE LOOP
+  }while (!programErrors); //END WHILE LOOP
  
  }//END main() FUNCTION
  
  //Error Code Constants
  public static final int ERROR_CODE_NO_USB_DEVICE_CONNECTED = -1;
- public static final int ERROR_CODE_OLD_VERSION_NUMBER = -2;
+ public static final int ERROR_CODE_OLD_VERSION_NUMBER = -2;      
+ public static final int ERROR_CODE_VERSION_NOT_RELEASED = -3;     //Code is too new
 
  //Linux Distribution Constants 
  public static final double UBUNTU_16_04_LTS_CLASSIC = 16.4; 
@@ -43,7 +46,7 @@ public class InfiniFill {
 
  //Velocio PLC Constants 
  public static final double ACE_1450 = 1450.0;
- public static final double BRANCH_1486v10 = 1486.10
+ public static final double BRANCH_1486v10 = 1486.10;
 
  
  /**
@@ -56,16 +59,19 @@ public class InfiniFill {
   * Possible start up modes include: PRODUCTION, FIELD, and TESTING
   * See PLM ???? to verfy that want parts are inside each high level kiosk version
   */
- private void ConfigureInfiniFil(int bootMode, int verNum){
-   
-   LinuxPLC.IntializeDisplay(bootMode, verNum);
-   LinuxPLC.IntializeValves(bootMode, verNum);
-   LinuxPLC.IntializePumps(bootMode, verNum);
-   LinuxPLC.IntializeHeaters(bootMode, verNum);
-   LinuxPLC.IntializeCoffeeMachine(bootMode, verNum);
+ private static void CongfigureInfiniFill(int bootMode, double verNum){
+   //TO-DO: LinuxPLC kiosk0 = new Kiosk;
+   //TO-DO: kisk0.addSystem
+   VelocioPLC kisk0PLC = new VelocioPLC();
+   kisk0PLC.IntializeDisplay(bootMode, verNum);
+   kisk0PLC.IntializeValves(bootMode, verNum);
+   kisk0PLC.IntializePumps(bootMode, verNum);
+   kisk0PLC.IntializeHeaters(bootMode, verNum);
+   kisk0PLC.IntializeCoffeeMachine(bootMode, verNum);
    //TO-DO: ParallaxHardware.IntializeRFID(bootMode, verNum);
    //TO-DO: ParallaxHardware.IntializeUltrasonicSensor(bootMode, verNum);
    //TO-DO: AmazonHardware.IntializeAudio(bootMode, verNum); 
+   //TO-DO: OnSemiConductorHardware.IntializeCamera(bootMode, verNum); www.boofcv.org
  }//END ConfigureInfiniFill() FUNCTION
 
 }//END InfiniFill CLASS

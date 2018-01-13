@@ -1,8 +1,8 @@
 /**
- * @file LinuxPLC.java 
+ * @file     VelocioPLC.java 
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@infinifill.com
- * @updated  11 JAN 2018
+ * @updated  12 JAN 2018
  * 
  * @version 0.1
  * @brief Manage a two way connection between Linux and a PLC 
@@ -14,26 +14,13 @@
  * Class to make and manage connection between any Linux PC and the 
  * Velocio Programmable Logic Controller (PLC) 
  */
+public class VelocioPLC {
  
-import STATUS_CODES;
-
-public class LinuxPLC {
- 
-  private int serialPortNumber;   //Serial port number currently in use 
-  private int velocioModelNumber; //Two PLC are currently supported
-  private int linuxDistribution;  //Two Linux distributions are currently supported
-  private boolean LOCAL_DEBUG_ON = true; //Toogle debug print statement for this object
-  //Error Code Constants
-  public static final int ERROR_CODE_NO_USB_DEVICE_CONNECTED = -1;
-  public static final int ERROR_CODE_OLD_VERSION_NUMBER = -2;
-
-  //Linux Distribution Constants 
-  public static final double UBUNTU_16_04_LTS_CLASSIC = 16.4; 
-  public static final double RASPBERRY_STRETCH_2017_11 = 2017.11; //
-
-  //Velocio PLC Constants 
-  public static final double ACE_1450 = 1450.0;
-  public static final double BRANCH_1486v10 = 1486.10
+  private int serialPortNumber;       //Serial port number currently in use 
+  private double velocioModelNumber;  //Two PLC are currently supported
+  private double linuxDistribution;      //Two Linux distributions are currently supported
+  
+  public boolean DEBUG_STATEMENTS_ON = true; //Toogle debug print statements
 
   /**
    * @brief Default LinuxPLC object constructor 
@@ -45,10 +32,10 @@ public class LinuxPLC {
    * ACE 1450 PLC is connected to a Raspberry Pi 3 B+ running Ubunti 16.04
    * 
    */
-  public LinuxPLC(){
+  public VelocioPLC(){
     serialPortNumber = -1;
-    velocioModelNumber = ACE_1450;
-    linuxDistribution = UBUNTU_16_04_LTS_CLASSIC;    
+    velocioModelNumber = InfiniFill.ACE_1450;
+    linuxDistribution = InfiniFill.UBUNTU_16_04_LTS_CLASSIC;    
   }//END LinuxPLC() DEFAULT CONSTRUCTOR
 
   /**
@@ -62,17 +49,39 @@ public class LinuxPLC {
    *
    * TO-DO: ???
    */
-  public LinuxPLC(int portNum, double plcModelNum, double linuxDistro){
+  public VelocioPLC(int portNum, double plcModelNum, double linuxDistro){
     serialPortNumber = portNum;
     velocioModelNumber = plcModelNum;
     linuxDistribution = linuxDistro;    
 
-    if(LOCAL_DEBUG_ON) System.out.println("The port number you selected it not available, using port number 1.");
-    serialPortNumber = 1; //
-
+    if(DEBUG_STATEMENTS_ON) System.out.println("The port number you selected it not available, using port number 1.");
+    serialPortNumber = 1;
 
   }//END LinuxPLC() DEFAULT CONSTRUCTOR
-
+  
+  public int IntializeDisplay(int bootMode, double verNum){
+   
+   return 0; //Intialization OK
+  }
+  
+  public int IntializeValves(int bootMode, double verNum){
+    
+    return 0; //Intialization OK
+  }
+  
+  public int IntializePumps(int bootMode, double verNum){
+    
+    return 0; //Intialization OK  
+  }
+   
+  public int IntializeHeaters(int bootMode, double verNum){
+   
+    return 0; //Intialization OK 
+  }
+  
+  public int IntializeCoffeeMachine(int bootMode, double verNum){
+    return 0; //Intialization OK 
+  }
 
   public int GetSerialPortNUmber(){
     return this.serialPortNumber;
@@ -81,9 +90,9 @@ public class LinuxPLC {
   public static void UnitTest1(String[] args){
     System.out.println("Hello world!");
     
-    MakeSerialConnection(0);
+    //TO-DO: MakeSerialConnection(0);
     
-    UpdatePLC(1.0);
+    //TO-DO: UpdatePLC(1.0);
   }
   
   
@@ -97,7 +106,7 @@ public class LinuxPLC {
     //USB is a serial communication path
     
       
-      return ERROR_CODE_NO_USB_DEVICE_CONNECTED; 
+    //TO-DO: return InfiniFill.ERROR_CODE_NO_USB_DEVICE_CONNECTED; 
     
     return 1; //No errors connection made
   }// END MakeSerialConnection() FUNCTION
@@ -110,29 +119,28 @@ public class LinuxPLC {
    */
  public int UpdatePLC(double newVerNum){
    
-   int updatePLC_ErrorCode = 0;
-   
-   if(newVerNum == 0.1){
+   boolean updateError = false;
+   int updateErrorCode = 0;
+
+   if(!ValidVersionNumber(newVerNum)) updateError = true;
+   if(newVerNum == 0.1 && !updateError){
    
    }
-   else if(newVerNum == 0.2){
+   else if(newVerNum == 0.2 && !updateError){
    
    }
    else{
-   
+     updateErrorCode = InfiniFill.ERROR_CODE_VERSION_NOT_RELEASED;
    }//END if-elseif-else BLOCK
+
+   if(!updateError) return 1; 
+   else return updateErrorCode; 
+
  }//END UpdatePLC() FUNCTION
  
-   if(updatePLC_ErrorCode == 0) return 1;
-   else return updatePLC_ErrorCode;
- }//END Update() FUNCTION
- 
- 
- 
- private CheckVersionNumber(double newVerNum){
- 
- 
-   return ERROR_CODE_OLD_VERSION_NUMBER;
+ private boolean ValidVersionNumber(double newVerNum){
+   //TO-DO: InfiniFill.ERROR_CODE_OLD_VERSION_NUMBER;
+   return true;
  }//END CheckVersionNumber() FUNCTION
  
 }//END LinuxPLC CLASS
