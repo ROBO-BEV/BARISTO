@@ -2,7 +2,7 @@
  * @file     InfiniFill.java
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@infinifill.com
- * @updated  13 JAN 2018
+ * @updated  14 JAN 2018
  *
  * @version 0.1
  * @brief Main driver program for the InfiniFill coffee kiosk
@@ -11,6 +11,7 @@
  *
  * Yes we are programming a coffee robot in JAVA...
  */
+
 public class InfiniFill {
  
 public static boolean DEBGUG_STATEMENTS_ON = true;
@@ -21,17 +22,17 @@ public static boolean DEBGUG_STATEMENTS_ON = true;
  */
  public static void main (String[] args){
    boolean programErrors = false;
-   String inputArguments[] = {"2", "2.2"};
+   String inputArguments[] = {"0", "0.1"};
 
    System.out.println("InfiniFill kiosk starting up.");
-   InfiniFillTerminal.GetUserInput(inputArguments);
+   inputArguments = InfiniFillTerminal.GetUserInput();
    CongfigureInfiniFill(Integer.parseInt(inputArguments[0]), Double.parseDouble(inputArguments[1]));
    System.out.println("InfiniFill kiosk is now ready.");
    
    do {
-     System.out.println("Good Morning, Jane. Please place your cup on the pad.");
-     //TO-DO: errorCode = ScanRFID();
-     System.out.println("One large coffee with light cream coming right up.");
+     //System.out.println("Good Morning, Jane. Please place your cup on the pad.");
+     //TO-DO: errorCode = ParallaxHardware.ScanRFID();
+     //System.out.println("One large coffee with light cream coming right up.");
      //TO-DO: switch(errorCode) break;
    }while (!programErrors); //END WHILE LOOP
  
@@ -52,6 +53,9 @@ public static boolean DEBGUG_STATEMENTS_ON = true;
 
  //Kiosk Constants
  public static final double CURRENT_KIOSK_HW_VERSION = 0.1;
+ public static final int PRODUCTION = 2;
+ public static final int FIELD = 1;
+ public static final int TESTING = 0;
 
  
  /**
@@ -78,5 +82,8 @@ public static boolean DEBGUG_STATEMENTS_ON = true;
    //TO-DO: AmazonHardware.IntializeAudio(bootMode, verNum); 
    //TO-DO: OnSemiConductorHardware.IntializeCamera(bootMode, verNum); www.boofcv.org
  }//END ConfigureInfiniFill() FUNCTION
+ 
+
+
 
 }//END InfiniFill CLASS
