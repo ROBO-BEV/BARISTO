@@ -2,46 +2,75 @@
  * @file     VelocioPLC.java 
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@infinifill.com
- * @updated  12 JAN 2018
+ * @updated  20 JAN 2018
  * 
  * @version 0.1
  * @brief Manage a two way connection between Linux and a PLC 
  * @link https://wiki.ubuntu.com/ARM/RaspberryPi
  * @link http://velocio.net/ace/
+ * @link http://fazecast.github.io/jSerialComm/
  *
  * @section DESCRIPTION
  *
  * Class to make and manage connection between any Linux PC and the 
  * Velocio Programmable Logic Controller (PLC) 
  */
+//TO-DO: import jSerialComm.*; 
+//http://fazecast.github.io/jSerialComm/
+//https://stackoverflow.com/questions/34644569/how-to-import-external-jars-in-sublime-text-2
+
 public class VelocioPLC {
  
   private int serialPortNumber;       //Serial port number currently in use 
+  private SerialPort serialPort0;     //jSerialCom Serial Port object
+  private InputStream in;             //Standard Java InputStream/OutputStream interface
   private double velocioModelNumber;  //Two PLC are currently supported
-  private double linuxDistribution;      //Two Linux distributions are currently supported
+  private double linuxDistribution;   //Two Linux distributions are currently supported
   
-  public boolean DEBUG_STATEMENTS_ON = true; //Toogle debug print statements
-
+  //Velocio PLC Constants 
+  public static final double ACE_1450 = 1450.0;
+  public static final double BRANCH_1486v10 = 1486.10;
+  
   /**
-   * @brief Default LinuxPLC object constructor 
+   * @brief Default VelocioPLC object constructor 
    *
    * @parm NONE
    * @section DESCRIPTION
    *
-   * Initalized serial port number to -1 and assumes an 
+   * Initalized serial port number to 0 and assumes an 
    * ACE 1450 PLC is connected to a Raspberry Pi 3 B+ running Ubunti 16.04
    * 
    */
   public VelocioPLC(){
-    serialPortNumber = -1;
-    velocioModelNumber = InfiniFill.ACE_1450;
+    serialPortNumber = 0;
+    serialPort0 = SerialPort.getCommPorts("/dev/ttyS0");
+    serialPort0.openPort();
+    //Decrease CPU load by allowing OS to block until a value is recieved
+    serialPort0.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 100, 0); 
+    in = serialPort0.getInputStream();
+
+    velocioModelNumber = ACE_1450;
     linuxDistribution = InfiniFill.UBUNTU_16_04_LTS_CLASSIC;    
-  }//END LinuxPLC() DEFAULT CONSTRUCTOR
+  }//END VelocioPLC() DEFAULT CONSTRUCTOR
+  
+  /**
+   * @brief Override finalize() to create destructors workaround.
+   *
+   * @parm NONE
+   * @section DESCRIPTION
+   *
+   * TO-DO: ???
+   * 
+   */
+  public void finalize(){
+    serialPort0.closePort();     
+    in.close();
+  }//END finalize() FUNCTION 
 
   /**
-   * @brief Three parameter LinuxPLC object constructor 
+   * @brief Three parameter VelocioPLC object constructor 
    *
-   * @parm portNum Serial port would like to use (Falls back to 1 on failure)
+   * @parm portNum Serial port you would like to use (Falls back to 1 on failure)
    * @parm plcModelNum Velocio PLC you are communicating with 
    * @parm linuxDistro Linux distribution currently on Raspberry Pi 3 B+
    *
@@ -54,33 +83,33 @@ public class VelocioPLC {
     velocioModelNumber = plcModelNum;
     linuxDistribution = linuxDistro;    
 
-    if(DEBUG_STATEMENTS_ON) System.out.println("The port number you selected it not available, using port number 1.");
-    serialPortNumber = 1;
+    //TO-DO: if(InfiniFill.DEBUG_STATEMENTS_ON) System.out.println("The port number you selected it not available, using port number 1.");
+    //TO-DO: serialPortNumber = 1;
 
-  }//END LinuxPLC() DEFAULT CONSTRUCTOR
+  }//END VelocioPLC() DEFAULT CONSTRUCTOR
   
   public int IntializeDisplay(int bootMode, double verNum){
    
-   return 0; //Intialization OK
+   return InfiniFill.OK; //Intialization OK
   }
   
   public int IntializeValves(int bootMode, double verNum){
     
-    return 0; //Intialization OK
+    return InfiniFill.OK; //Intialization OK
   }
   
   public int IntializePumps(int bootMode, double verNum){
     
-    return 0; //Intialization OK  
+    return InfiniFill.OK; //Intialization OK  
   }
    
   public int IntializeHeaters(int bootMode, double verNum){
    
-    return 0; //Intialization OK 
+    return InfiniFill.OK; //Intialization OK 
   }
   
   public int IntializeCoffeeMachine(int bootMode, double verNum){
-    return 0; //Intialization OK 
+    return InfiniFill.OK; //Intialization OK 
   }
 
   public int GetSerialPortNUmber(){
@@ -90,23 +119,34 @@ public class VelocioPLC {
   public static void UnitTest1(String[] args){
     System.out.println("Hello world!");
     
-    //TO-DO: MakeSerialConnection(0);
+    //TO-DO: CreateFullDuplexSerialConnection(0);
     
     //TO-DO: UpdatePLC(1.0);
   }
   
   
   /**
-   * @brief Initialize two-way serial connection between Linux and PLC
+   * @brief Initialize two-way serial connection
    * @parm portNum ID number for serial port you want to create
    *
    * @return 1 if no connections errors and ERROR_CODE_? otherwise
    */
-  public int MakeSerialConnection(int portNum){
+  public int ConfigureFullDuplexSerialConnection(int portNum, int baudRate, int newDataBits, int newStopBits, int newParity){
     //USB is a serial communication path
-    
+    for(int i = 0; i < MAX_SERIAL_PORTS; i++){
+     if
+    }//END FOR LOOP
+
+
+    switch(portNum){
+      case 0:
+      break;
+      case 1:
+      break;
+      default:
+    }//END switch
       
-    //TO-DO: return InfiniFill.ERROR_CODE_NO_USB_DEVICE_CONNECTED; 
+    //TO-DO: return InfiniFill.ERROR_CODE_NO_USB_DEVICE_CONNECTED;   between Linux and PLC
     
     return 1; //No errors connection made
   }// END MakeSerialConnection() FUNCTION
@@ -143,4 +183,4 @@ public class VelocioPLC {
    return true;
  }//END CheckVersionNumber() FUNCTION
  
-}//END LinuxPLC CLASS
+}//END VelocioPLC CLASS
