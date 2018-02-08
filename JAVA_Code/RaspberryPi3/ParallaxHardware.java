@@ -2,10 +2,10 @@
  * @file     ParallaxHardware.java
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@infinifill.com
- * @updated  14 JAN 2018
+ * @updated  06 FEB 2018
  *
  * @version 0.1
- * @brief Manage a two way connection between Linux and prefined Parallax hardware
+ * @brief Manage a two way connection between Linux and predefined Parallax hardware
  *
  * @section DESCRIPTION
  *
@@ -13,14 +13,14 @@
  */
 public class ParallaxHardware {
 
-  private int serialPortNumber;       //Serial port number currently in use 
-  private double parallaxModelNumber; //Two Parallax pieces of hardware are currently supported
-  private double linuxDistribution;   //Two Linux distributions are currently supported
+  private int serialPortNumber;      //Serial port number currently in use 
+  private int parallaxPartNumber;    //TO-DO: Two Parallax RFID hardware modules and one Parallax ultrasonic sensor are currently supported
+  private double operatingSystem;    //Two Linux distributions and one Windows OS are currently supported
 
-  //Parallax Constants
-  //TO-DO: public static final int RFID_TX_RX1234 = 1234;
-  //TO-DO: public static final int ULTRASONIC_SENSOR_1234 = 1234;
-  //TO-DO: public static final int RFID_TAG_1234 = 1234;
+  //Parallax Part Number Constants
+  public static final int RFID_TX_RX_PN28140 = 28140;            //www.parallax.com/product/28140
+  //TO-DO: public static final int ULTRASONIC_SENSOR_PN1234 = 1234;//Part Number 1234
+  //TO-DO: public static final int RFID_TAG_PN1234 = 1234;         //Part Number 1234
 
   /**
    * @brief Default ParallaxHardware object constructor 
@@ -28,36 +28,38 @@ public class ParallaxHardware {
    * @parm NONE
    * @section DESCRIPTION
    *
-   * TO-DO:
+   * Constructor assumes that ultrasonic sensor P/N 28140 is connected to a PC running 
+   * Window 10 Pro version 1709 on Serial Port #0
    * 
    */
   public ParallaxHardware(){
-    serialPortNumber = -1;
-    parallaxModelNumber = -1;
-    linuxDistribution = InfiniFill.UBUNTU_16_04_LTS_CLASSIC;    
+    serialPortNumber = 0;
+    parallaxPartNumber = RFID_TX_RX_PN28140;
+    operatingSystem = Baristo.WINDOWS_10_PRO_V1709;    
+
   }
 
 
   /**
    * @brief Three parameter ParallaxHardware object constructor 
    *
-   * @parm portNum Serial port you would like to use (Falls back to 1 on failure)
+   * @parm portNum Serial port you would like to use (Falls back to 0 on failure)
    * @parm pModelNum Parallax hardware part you are communicating with 
-   * @parm linuxDistro Linux distribution currently on Raspberry Pi 3 B+
+   * @parm opSys High level OS currently running
    *
    * @section DESCRIPTION
    *
    * TO-DO: ???
    */
-  public ParallaxHardware(int portNum, double pModelNum, double linuxDistro){
+  public ParallaxHardware(int portNum, int pModelNum, double opSys){
     serialPortNumber = portNum;
-    parallaxModelNumber = pModelNum;
-    linuxDistribution = linuxDistro;    
+    parallaxPartNumber = pModelNum;
+    operatingSystem = opSys;    
 
-    //TO-DO: if(InfiniFill.DEBUG_STATEMENTS_ON) System.out.println("The port number you selected it not available, using port number 1.");
-    //TO-DO: serialPortNumber = 1;
+    //TO-DO: if(Baristo.DEBUG_STATEMENTS_ON) System.out.println("The port number you selected it not available, using port number 1.");
+    //TO-DO: serialPortNumber = 0;
 
-  }//END VelocioPLC() DEFAULT CONSTRUCTOR
+  }//END THREE PARAMETER VelocioPLC(INT, INT, DOUBLE) CONSTRUCTOR
 
   /**
    * @brief Creat a two-way serial connection 
@@ -69,24 +71,44 @@ public class ParallaxHardware {
     //USB is a serial communication path
     
       
-    //TO-DO: return InfiniFill.ERROR_CODE_NO_SERIAL_CONNECTION_MADE; 
+    //TO-DO: return Baristo.ERROR_CODE_NO_SERIAL_CONNECTION_MADE; 
     
-    return InfiniFill.OK; //No errors connection made
+    return Baristo.OK; //No errors connection made
   }// END MakeSerialConnection() FUNCTION
 
-  public int IntializeRFID(int bootMode, double verNum){
+  /**
+   * @brief Setup communication between PC and RFID module installed in kiosk 
+   *
+   * @param bootMode Select mode kiosk should boot up in
+   * @param verNum High level hardware kiosk version number 
+   * @parm parrallaxPartNumber Part number for RFID module installed in kiosk
+   *
+   * @section DESCRIPTION
+   *
+   * TO-DO: ???
+   */
+  public int IntializeRFID(int bootMode, double verNum, int parrallaxPartNumber){
+   
+   return Baristo.OK; //Intialization OK
+  }
   
+   /**
+   * @brief Setup communication between PC and ultrasonic module installed in kiosk 
+   *
+   * @param bootMode Select mode kiosk should boot up in
+   * @param verNum High level hardware kiosk version number 
+   * @parm parrallaxPartNumber Part number for ultrasonic module installed in kiosk
+   * @parm numOfSensors Number of ultrasonic modules installed in kiosk
+   *
+   * @section DESCRIPTION
+   *
+   * TO-DO: ???
+   */
+  public int IntializeUltrasonicSensors(int bootMode, double verNum, int parrallaxPartNumber, int numOfSensors){
+
      //TO-DO: return InfiniFill.ERROR_CODE_??? 
     
-    return InfiniFill.OK; //No errors connection made
-  }//END IntializeRFID() FUNCTION
-
-
-  public int IntializeUltrasonicSensor(int bootMode, double verNum){
-
-     //TO-DO: return InfiniFill.ERROR_CODE_??? 
-    
-    return InfiniFill.OK; //No errors connection made
+    return Baristo.OK; //No errors connection made
   }//END IntializeUltrasonicSensor FUNCTION
 
 
@@ -97,7 +119,7 @@ public class ParallaxHardware {
 
     //TO-DO: return InfiniFill.ERROR_CODE_??? 
     
-    return InfiniFill.OK; //No errors connection made
+    return Baristo.OK; //No errors connection made
   }//END ScanRFID() FUNCTION  
 
 }//END ParallaxHardware CLASS

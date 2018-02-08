@@ -2,10 +2,11 @@
  * @file     VelocioPLC.java 
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@infinifill.com
- * @updated  20 JAN 2018
+ * @updated  06 FEB 2018
  * 
  * @version 0.1
- * @brief Manage a two way connection between Linux and a PLC 
+ * @brief Manage a two way connection between Personal Computer (PC) and a PLC 
+ *
  * @link https://wiki.ubuntu.com/ARM/RaspberryPi
  * @link http://velocio.net/ace/
  * @link http://fazecast.github.io/jSerialComm/
@@ -15,7 +16,8 @@
  * Class to make and manage connection between any Linux PC and the 
  * Velocio Programmable Logic Controller (PLC) 
  */
-//TO-DO: import jSerialComm.*; 
+
+import jSerialComm.*; 
 //http://fazecast.github.io/jSerialComm/
 //https://stackoverflow.com/questions/34644569/how-to-import-external-jars-in-sublime-text-2
 
@@ -25,12 +27,12 @@ public class VelocioPLC {
   private SerialPort serialPort0;     //jSerialCom Serial Port object
   private InputStream in;             //Standard Java InputStream/OutputStream interface
   private double velocioModelNumber;  //Two PLC are currently supported
-  private double linuxDistribution;   //Two Linux distributions are currently supported
+  private double operatingSystem;     //Two Linux distributions and one Windows OS are currently supported
   
   //Velocio PLC Constants 
   public static final double ACE_1450 = 1450.0;
   public static final double BRANCH_1486v10 = 1486.10;
-  
+  public static final int MAX_PLC_SERIAL_PORTS = 1; //TO-DO
   /**
    * @brief Default VelocioPLC object constructor 
    *
@@ -50,7 +52,7 @@ public class VelocioPLC {
     in = serialPort0.getInputStream();
 
     velocioModelNumber = ACE_1450;
-    linuxDistribution = InfiniFill.UBUNTU_16_04_LTS_CLASSIC;    
+    operatingSystem = Baristo.WINDOWS_10_PRO_V1709;    
   }//END VelocioPLC() DEFAULT CONSTRUCTOR
   
   /**
@@ -72,44 +74,66 @@ public class VelocioPLC {
    *
    * @parm portNum Serial port you would like to use (Falls back to 1 on failure)
    * @parm plcModelNum Velocio PLC you are communicating with 
-   * @parm linuxDistro Linux distribution currently on Raspberry Pi 3 B+
+   * @parm opSys High level OS currently running
    *
    * @section DESCRIPTION
    *
    * TO-DO: ???
    */
-  public VelocioPLC(int portNum, double plcModelNum, double linuxDistro){
+  public VelocioPLC(int portNum, double plcModelNum, double opSys){
     serialPortNumber = portNum;
     velocioModelNumber = plcModelNum;
-    linuxDistribution = linuxDistro;    
+    operatingSystem = opSys;    
 
     //TO-DO: if(InfiniFill.DEBUG_STATEMENTS_ON) System.out.println("The port number you selected it not available, using port number 1.");
     //TO-DO: serialPortNumber = 1;
 
   }//END VelocioPLC() DEFAULT CONSTRUCTOR
   
+   
   public int IntializeDisplay(int bootMode, double verNum){
    
-   return InfiniFill.OK; //Intialization OK
+   return Baristo.OK; //Intialization OK
   }
-  
+
+
+  public int IntializeBatteries(int bootMode, double verNum){
+   
+   return Baristo.OK; //Intialization OK
+  }
+
+  public int IntializeSolarPanels(int bootMode, double verNum){
+   
+   return Baristo.OK; //Intialization OK
+  }
+
   public int IntializeValves(int bootMode, double verNum){
     
-    return InfiniFill.OK; //Intialization OK
+    return Baristo.OK; //Intialization OK
+  }
+
+  public int IntializeFeedstock(int bootMode, double verNum){
+    
+    return Baristo.OK; //Intialization OK
+  }
+
+  public int IntializeLinearActuators(int bootMode, double verNum){
+    
+    return Baristo.OK; //Intialization OK
   }
   
   public int IntializePumps(int bootMode, double verNum){
     
-    return InfiniFill.OK; //Intialization OK  
+    return Baristo.OK; //Intialization OK  
   }
    
   public int IntializeHeaters(int bootMode, double verNum){
    
-    return InfiniFill.OK; //Intialization OK 
+    return Baristo.OK; //Intialization OK 
   }
   
   public int IntializeCoffeeMachine(int bootMode, double verNum){
-    return InfiniFill.OK; //Intialization OK 
+    return Baristo.OK; //Intialization OK 
   }
 
   public int GetSerialPortNUmber(){
@@ -133,8 +157,8 @@ public class VelocioPLC {
    */
   public int ConfigureFullDuplexSerialConnection(int portNum, int baudRate, int newDataBits, int newStopBits, int newParity){
     //USB is a serial communication path
-    for(int i = 0; i < MAX_SERIAL_PORTS; i++){
-     if
+    for(int i = 0; i < MAX_PLC_SERIAL_PORTS; i++){
+
     }//END FOR LOOP
 
 
@@ -170,7 +194,7 @@ public class VelocioPLC {
    
    }
    else{
-     updateErrorCode = InfiniFill.ERROR_CODE_VERSION_NOT_RELEASED;
+     updateErrorCode = Baristo.ERROR_CODE_VERSION_NOT_RELEASED;
    }//END if-elseif-else BLOCK
 
    if(!updateError) return 1; 

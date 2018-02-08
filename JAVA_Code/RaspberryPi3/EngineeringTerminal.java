@@ -1,11 +1,11 @@
 /**
- * @file     InfiniFillTerminal.java
+ * @file     EngineeringTerminal.java
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@infinifill.com
- * @updated  14 JAN 2018
+ * @updated  03 FEB 2018
  *
  * @version 0.1
- * @brief InfiniFill specific JAVA terminal class
+ * @brief Robotic Beverage Technologies Inc specific debugging terminal class
  *
  * @section DESCRIPTION
  *
@@ -14,7 +14,7 @@
 import java.util.Scanner; //Required for nextInt() & nextDouble() calls
 import java.util.*;       //Required for TRY-CATCH Exception types 
 
-public class InfiniFillTerminal {
+public class EngineeringTerminal {
 
 /**
 * @brief Promt and then get user input via terminal
@@ -39,7 +39,7 @@ public class InfiniFillTerminal {
    }
    catch (InputMismatchException e){
      while(bootMode < 0 || bootMode >2){
-   	   if(InfiniFill.DEBGUG_STATEMENTS_ON){
+   	   if(Baristo.DEBGUG_STATEMENTS_ON){
          System.out.print("You entered an invalid boot mode, please try again.\n");
          System.out.print("Select boot mode (2 = PRODUCTION, 1 = FIELD, 0 = TESTING): ");
    	     bootMode = scanner.nextInt();
@@ -54,8 +54,8 @@ public class InfiniFillTerminal {
    System.out.print("Enter Kiosk hardware version (e.g. 1.5, 0.1, 0.42, etc): ");
    double verNum = scanner.nextDouble();
    //TO-DO: catch (InputMismatchException e)
-   while(verNum < 0 || verNum > InfiniFill.CURRENT_KIOSK_HW_VERSION){
-   	 if(InfiniFill.DEBGUG_STATEMENTS_ON){
+   while(verNum < 0 || verNum > Baristo.CURRENT_KIOSK_HW_VERSION){
+   	 if(Baristo.DEBGUG_STATEMENTS_ON){
        System.out.print("You entered an invalid kiosk hardware version number, please try again.\n");
    	   System.out.print("Enter Kiosk hardware version (e.g. 1.5, 0.1, 0.42, etc): ");
    	   verNum = scanner.nextDouble();
@@ -65,7 +65,7 @@ public class InfiniFillTerminal {
    inputArguments[1] = Double.toString(verNum);
    
    return inputArguments;
-   //System.out.println(String.format("Booting InfiniFill kiosk V %d in %i mode. ", verNum, bootMode));
+   //System.out.println(String.format("Booting Baristo kiosk V %d in %i mode. ", verNum, bootMode));
 
  }//END GetUserInput() FUNCTION
-}//END JavaTerminal() CLASS
+}//END EngineeringTerminal() CLASS
