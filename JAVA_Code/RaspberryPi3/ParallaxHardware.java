@@ -18,9 +18,10 @@ public class ParallaxHardware {
   private double operatingSystem;    //Two Linux distributions and one Windows OS are currently supported
 
   //Parallax Part Number Constants
+  public static int DEFAULT_NUM_OF_PARALLAX_PARTS = 4;           //THREE ultrasonic sensors & ONE RFID transciever
   public static final int RFID_TX_RX_PN28140 = 28140;            //www.parallax.com/product/28140
-  //TO-DO: public static final int ULTRASONIC_SENSOR_PN1234 = 1234;//Part Number 1234
-  //TO-DO: public static final int RFID_TAG_PN1234 = 1234;         //Part Number 1234
+  public static final int ULTRASONIC_SENSOR_PN28015 = 28015;    //www.parallax.com/product/28015
+  public static final int RFID_TAG_PN28142 = 28142;              //www.parallax.com/product/28142
 
   /**
    * @brief Default ParallaxHardware object constructor 
@@ -34,10 +35,23 @@ public class ParallaxHardware {
    */
   public ParallaxHardware(){
     serialPortNumber = 0;
-    parallaxPartNumber = RFID_TX_RX_PN28140;
-    operatingSystem = Baristo.WINDOWS_10_PRO_V1709;    
 
-  }
+    parallaxPartNumber = -1;
+    int parallaxParts[] = new int[DEFAULT_NUM_OF_PARALLAX_PARTS];
+    parallaxParts[0] = RFID_TX_RX_PN28140;
+    parallaxParts[1] = ULTRASONIC_SENSOR_PN28015;
+    parallaxParts[2] = ULTRASONIC_SENSOR_PN28015;
+    parallaxParts[3] = ULTRASONIC_SENSOR_PN28015;
+
+    operatingSystem = Baristo.WINDOWS_10_PRO_V1709; 
+    
+    for(int i = 0; i < DEFAULT_NUM_OF_PARALLAX_PARTS; i++){
+      parallaxPartNumber = parallaxParts[i];
+      ParallaxHardware(serialPortNumber++, parallaxPartNumber, operatingSystem); 
+    }//END FOR LOOP
+      
+
+  }//END ParallaxHardware() DEFAULT CONSTRUCTOR
 
 
   /**
@@ -51,15 +65,15 @@ public class ParallaxHardware {
    *
    * TO-DO: ???
    */
-  public ParallaxHardware(int portNum, int pModelNum, double opSys){
+  public ParallaxHardware(int portNum, int pPartNum, double opSys){
     serialPortNumber = portNum;
-    parallaxPartNumber = pModelNum;
+    parallaxPartNumber = pPartNum;
     operatingSystem = opSys;    
 
     //TO-DO: if(Baristo.DEBUG_STATEMENTS_ON) System.out.println("The port number you selected it not available, using port number 1.");
     //TO-DO: serialPortNumber = 0;
 
-  }//END THREE PARAMETER VelocioPLC(INT, INT, DOUBLE) CONSTRUCTOR
+  }//END THREE PARAMETER ParallaxHardware(INT, INT, DOUBLE) CONSTRUCTOR
 
   /**
    * @brief Creat a two-way serial connection 
