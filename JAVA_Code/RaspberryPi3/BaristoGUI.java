@@ -1,7 +1,7 @@
 /**
  * @file     BaristoGUI.java
  * @author   Blaze Sanders (@ROBO_BEV)
- * @email    blaze@infinifill.com
+ * @email    founders@robobev.com
  * @updated  06 FEB 2018
  *
  * @version 0.1

@@ -1,70 +1,66 @@
 /**
- * @file     ParallaxHardware.java
+ * @file     SparkFunHardware.java
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    founders@robobev.com
- * @updated  14 FEB 2018
+ * @updated  15 FEB 2018
  *
  * @version 0.1
- * @brief Manage a two way connection between a CPU with serial ports and predefined Parallax hardware
+ * @brief Manage a two way connection between a CPU with serial ports and predefined SparkFun hardware
  *
  * @section DESCRIPTION
  *
  */
-public class ParallaxHardware {
+public class SparkFunHardware {
 
   private int serialPortNumber;      //Serial port number currently in use 
-  private int parallaxPartNumber;    //TO-DO: Two Parallax RFID hardware modules and one Parallax ultrasonic sensor are currently supported
+  private int sparkFunPartNumber;    //TO-DO: Two Parallax RFID hardware modules and one Parallax ultrasonic sensor are currently supported
   private double operatingSystem;    //Two Linux distributions and one Windows OS are currently supported
 
-  //Parallax Part Number Constants
-  public static int DEFAULT_NUM_OF_PARALLAX_PARTS = 4;           //THREE ultrasonic sensors & ONE RFID transciever
-  public static final int RFID_TX_RX_PN28140 = 28140;            //www.parallax.com/product/28140
-  public static final int ULTRASONIC_SENSOR_PN28015 = 28015;    //www.parallax.com/product/28015
-  public static final int RFID_TAG_PN28142 = 28142;              //www.parallax.com/product/28142
-
+  //SparkFun Part Number Constants
+  public static int DEFAULT_NUM_OF_SPARKFUN_PARTS = 1;           //THREE ultrasonic sensors & ONE RFID transciever
+  public static final int RFID_TX_RX_PN09963 = 09963;            //TO-DO: Add link
+  public static final int RFID_TAG_PN1234 = 1234;                //TO-DO: Find rectangular card
   /**
-   * @brief Default ParallaxHardware object constructor 
+   * @brief Default SparkFun Hardware object constructor 
    *
    * @parm NONE
    * @section DESCRIPTION
    *
-   * Constructor assumes that ultrasonic sensor P/N 28140 is connected to a PC running 
+   * Constructor assumes that ??? P/N ??? is connected to a PC running 
    * Window 10 Pro version 1709 on Serial Port #0
    * 
    */
-  public ParallaxHardware(){
+  public SparkFunHardware(){
     serialPortNumber = 0;
 
-    int parallaxParts[] = new int[DEFAULT_NUM_OF_PARALLAX_PARTS];
-    parallaxParts[0] = RFID_TX_RX_PN28140;
-    parallaxParts[1] = ULTRASONIC_SENSOR_PN28015;
-    parallaxParts[2] = ULTRASONIC_SENSOR_PN28015;
-    parallaxParts[3] = ULTRASONIC_SENSOR_PN28015;
+    int sparkfunParts[] = new int[DEFAULT_NUM_OF_SPARKFUN_PARTS];
+    sparkfunParts[0] = RFID_TX_RX_PN09963;
+
 
     operatingSystem = Baristo.WINDOWS_10_PRO_V1709; 
     
-    for(int i = 0; i < DEFAULT_NUM_OF_PARALLAX_PARTS; i++){
-      ParallaxHardware(serialPortNumber++, parallaxParts[i], operatingSystem); 
+    for(int i = 0; i < DEFAULT_NUM_OF_SPARKFUN_PARTS; i++){
+      SparkFunHardware(serialPortNumber++, sparkfunParts[i], operatingSystem); 
     }//END FOR LOOP
       
 
-  }//END ParallaxHardware() DEFAULT CONSTRUCTOR
+  }//END SparkFunHardware() DEFAULT CONSTRUCTOR
 
 
   /**
-   * @brief Three parameter ParallaxHardware object constructor 
+   * @brief Three parameter SparkFun Hardware object constructor 
    *
    * @parm portNum Serial port you would like to use (Falls back to 0 on failure)
-   * @parm pModelNum Parallax hardware part you are communicating with 
+   * @parm sModelNum SparkFun hardware part you are communicating with 
    * @parm opSys High level OS currently running
    *
    * @section DESCRIPTION
    *
    * TO-DO: ???
    */
-  public ParallaxHardware(int portNum, int pPartNum, double opSys){
+  public SparkFunHardware(int portNum, int sPartNum, double opSys){
     serialPortNumber = portNum;
-    parallaxPartNumber = pPartNum;
+    sparkfunPartNumber = sPartNum;
     operatingSystem = opSys;    
 
     //TO-DO: if(Baristo.DEBUG_STATEMENTS_ON) System.out.println("The port number you selected it not available, using port number 1.");

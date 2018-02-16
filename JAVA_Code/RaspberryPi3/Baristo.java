@@ -1,7 +1,7 @@
 /**
  * @file     Baristo.java
  * @author   Blaze Sanders (@ROBO_BEV)
- * @email    blaze@infinifill.com
+ * @email    founders@robobev.com
  * @updated  06 FEB 2018
  *
  * @version 0.1
@@ -9,7 +9,7 @@
  *
  * @section DESCRIPTION
  *
- * Yes we are programming a coffee robot in JAVA...
+ * TO-DO:
  */
 
 public class Baristo {
@@ -80,9 +80,9 @@ public class Baristo {
     do {
       //TO-DO: personPresent = OnSemiConductorHardware.ScanForPersonPresent();
       //TO-DO: https://aws.amazon.com/developers/getting-started/java/
-      //System.out.println("Good Morning, Jane. Please place your cup on the pad.");
+      System.out.println("Good Morning, Jane. Please place your cup on the pad.");
       //TO-DO: errorCode = ParallaxHardware.ScanForRFIDTag();
-      //TO-DO: errorCode = ParallaxHardware.ScanForCupPresent();
+      //TO-DO: errorCode = ParallaxHardware.DetermineCupPosition();
       //System.out.println("One large coffee with light cream coming right up.");
       //TO-DO: switch(errorCode) break;
       //TO-DO: System.gc(); //Ask garbage collector to run and reclaim "free" JVM memory maybe
