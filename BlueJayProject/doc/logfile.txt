@@ -1,0 +1,70 @@
+Class documentation
+<---- javadoc command: ---->
+/usr/lib/jvm/jdk-8-oracle-arm32-vfp-hflt/bin/javadoc
+-author
+-version
+-nodeprecated
+-package
+-noindex
+-notree
+-nohelp
+-nonavbar
+-source
+1.8
+-classpath
+/usr/share/bluej/bluejcore.jar:/usr/share/bluej/junit-4.8.2.jar:/usr/share/bluej/userlib/pi4j-core.jar:/usr/share/bluej/userlib/pi4j-device.jar:/usr/share/bluej/userlib/pi4j-gpio-extension.jar:/usr/share/bluej/userlib/pi4j-service.jar:/home/pi/GitHub/Baristo/BlueJayProject
+-d
+/home/pi/GitHub/Baristo/BlueJayProject/doc
+-encoding
+UTF-8
+-charset
+UTF-8
+-docletpath
+/usr/share/bluej/bjdoclet.jar
+-doclet
+bluej.doclet.doclets.formats.html.HtmlDoclet
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java
+<---- end of javadoc command ---->
+Loading source file /home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java...
+Constructing Javadoc information...
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:20: error: package jSerialComm does not exist
+import jSerialComm.*; 
+^
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:27: error: cannot find symbol
+  private SerialPort serialPort0;     //jSerialCom Serial Port object
+          ^
+  symbol:   class SerialPort
+  location: class VelocioPLC
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:28: error: cannot find symbol
+  private InputStream in;             //Standard Java InputStream/OutputStream interface
+          ^
+  symbol:   class InputStream
+  location: class VelocioPLC
+Standard Doclet version 1.8.0_65
+Building tree for all the packages and classes...
+Generating /home/pi/GitHub/Baristo/BlueJayProject/doc/VelocioPLC.html...
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:46: warning - @brief is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:46: warning - @parm is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:46: warning - @section is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:83: warning - @brief is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:83: warning - @parm is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:83: warning - @parm is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:83: warning - @parm is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:83: warning - @section is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:158: warning - @brief is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:158: warning - @parm is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:67: warning - @brief is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:67: warning - @parm is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:67: warning - @section is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:184: warning - @brief is an unknown tag.
+/home/pi/GitHub/Baristo/BlueJayProject/VelocioPLC.java:184: warning - @parm is an unknown tag.
+Generating /home/pi/GitHub/Baristo/BlueJayProject/doc/package-frame.html...
+Generating /home/pi/GitHub/Baristo/BlueJayProject/doc/package-summary.html...
+Generating /home/pi/GitHub/Baristo/BlueJayProject/doc/constant-values.html...
+Building index for all the packages and classes...
+Building index for all classes...
+Generating /home/pi/GitHub/Baristo/BlueJayProject/doc/allclasses-frame.html...
+Generating /home/pi/GitHub/Baristo/BlueJayProject/doc/allclasses-noframe.html...
+Generating /home/pi/GitHub/Baristo/BlueJayProject/doc/index.html...
+Generating /home/pi/GitHub/Baristo/BlueJayProject/doc/stylesheet.css...
+18 warnings
