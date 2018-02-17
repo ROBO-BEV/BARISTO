@@ -2,24 +2,64 @@
  * @file     Baristo.java
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    founders@robobev.com
- * @updated  06 FEB 2018
+ * @updated  16 FEB 2018
  *
  * @version 0.1
  * @brief Main driver program for the Baristo coffee kiosk
+ * 
+ * @link https://RoboBev.com/subscribe
+ * @link http://pi4j.com/install.html
+ * @link https://github.com/Pi4J/pi4j
  *
  * @section DESCRIPTION
  *
- * TO-DO:
+ * Yes we are programming a coffee robot in JAVA..
+ *
+ * %%
+ * Copyright (C) 2012 - 2017 Pi4J
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%.
  */
+
+//Imports to use https://github.com/Pi4J/pi4j
+import com.pi4j.io.gpio.*;
+//import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+//import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import com.pi4j.platform.*;
+//import com.pi4j.platform.Platform;
+//import com.pi4j.platform.PlatformAlreadyAssignedException;
+//import com.pi4j.platform.PlatformManager;
+import com.pi4j.io.i2c.*;
+//import com.pi4j.io.i2c.I2CBus;
+//import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
+
+import java.io.IOException;
+import java.util.*;
+//import java.util.Arrays;
+//import java.util.Scanner;
+//import java.util.Date;
 
 public class Baristo {
  
   //Global Variables
-  public static int errorCodes[];                     //Runtime traceback error array
-  private static int errorNum = 0;                    //Internally used index for errorCode array
+  private static int errorCodes[];                     //Runtime traceback error array
+  private static int errorNum = 0;                     //Internally used index for errorCode array
+  
+  public static boolean DEBGUG_STATEMENTS_ON = false;  //Quick on-off toggle for debug statements
 
-  //Global Constants
-  public static boolean DEBGUG_STATEMENTS_ON = true;  //Quick on-off toggle for debug statements
   
   //Error Code Constants
   public static final int MAX_ERROR_CODES = 50;                      //TO-DO: DETERMINE THIS NUMBER
@@ -44,6 +84,7 @@ public class Baristo {
 
   //Kiosk Constants
   public static final double CURRENT_KIOSK_HW_VERSION = 0.1;
+  public static final double LOWEST_SUPPORTED_KIOSK_HW_VERSION = 0.1;
   public static final int PRODUCTION = 2;
   public static final int FIELD = 1;
   public static final int TESTING = 0;
@@ -62,6 +103,36 @@ public class Baristo {
    */
   public static void main (String[] args){
    
+    //Create General Purpose Input / Output (GPIO) controller
+    final GpioController gpio = GpioFactory.getInstance();
+    
+
+    //TO-DO: PUT NEXT ???12??? LINES OF CODE INTO ITS OWN FUNCTION
+    //Set GPIO Pin #1 (P1 = BCM?) as an input with internal pull up resistor enabled
+    final GpioPinDigitalInput powerButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_UP);
+    powerButton.setDebounce(20); //20 milliseconds
+    
+
+    final GpioPinDigitalOutput ultrasonicPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02);
+
+
+
+    //Create and register gpio pin listeners
+    powerButton.addListener(new GpioPinListenerDigital() {
+      @Override
+      public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+        //Display pin state on console
+        System.out.println("[" + new Date() + "] --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+      }//END handleGpioPinDigitalStateChangeEvent() FUNCTION
+
+    });
+
+
+    //Power button is a Normallly Open (N.O.) button pulled HIGH
+    while(powerButton.isHigh()){ 
+      Thread.sleep(500); //Pause for 500 milliseconds 
+    }//END WHILE LOOP
+
     System.out.println("Baristo kiosk starting up.");
 
     String inputArguments[] = {"2", "0.1"};  //TO-DO: REPLACE WITH STRING OR NUMERICAL CONSTANTS
@@ -74,15 +145,15 @@ public class Baristo {
 
     inputArguments = EngineeringTerminal.GetUserInput();
     errorCodes[errorNum++] = CongfigureBaristo(Integer.parseInt(inputArguments[0]), Double.parseDouble(inputArguments[1]));
-   
+
     System.out.println("Baristo kiosk is now ready.");
-   
+    
     do {
       //TO-DO: personPresent = OnSemiConductorHardware.ScanForPersonPresent();
       //TO-DO: https://aws.amazon.com/developers/getting-started/java/
-      System.out.println("Good Morning, Jane. Please place your cup on the pad.");
+      //System.out.println("Good Morning, Jane. Please place your cup on the pad.");
       //TO-DO: errorCode = ParallaxHardware.ScanForRFIDTag();
-      //TO-DO: errorCode = ParallaxHardware.DetermineCupPosition();
+      //TO-DO: errorCode = ParallaxHardware.ScanForCupPresent();
       //System.out.println("One large coffee with light cream coming right up.");
       //TO-DO: switch(errorCode) break;
       //TO-DO: System.gc(); //Ask garbage collector to run and reclaim "free" JVM memory maybe

@@ -1,15 +1,19 @@
 /**
  * @file     ParallaxHardware.java
  * @author   Blaze Sanders (@ROBO_BEV)
- * @email    founders@robobev.com
- * @updated  14 FEB 2018
+ * @email    blaze@infinifill.com
+ * @updated  06 FEB 2018
  *
  * @version 0.1
- * @brief Manage a two way connection between a CPU with serial ports and predefined Parallax hardware
+ * @brief Manage a two way connection between Linux and predefined Parallax hardware
  *
  * @section DESCRIPTION
  *
+ * Yes we are programming a coffee robot in JAVA...
  */
+
+import Baristo.;
+
 public class ParallaxHardware {
 
   private int serialPortNumber;      //Serial port number currently in use 
@@ -21,7 +25,7 @@ public class ParallaxHardware {
   public static final int RFID_TX_RX_PN28140 = 28140;            //www.parallax.com/product/28140
   public static final int ULTRASONIC_SENSOR_PN28015 = 28015;    //www.parallax.com/product/28015
   public static final int RFID_TAG_PN28142 = 28142;              //www.parallax.com/product/28142
-
+  public static final int UNSUPPORTED_PARALLAX_PART_NUMBER = -420;
   /**
    * @brief Default ParallaxHardware object constructor 
    *
@@ -35,6 +39,7 @@ public class ParallaxHardware {
   public ParallaxHardware(){
     serialPortNumber = 0;
 
+    parallaxPartNumber = -1;
     int parallaxParts[] = new int[DEFAULT_NUM_OF_PARALLAX_PARTS];
     parallaxParts[0] = RFID_TX_RX_PN28140;
     parallaxParts[1] = ULTRASONIC_SENSOR_PN28015;
@@ -44,7 +49,8 @@ public class ParallaxHardware {
     operatingSystem = Baristo.WINDOWS_10_PRO_V1709; 
     
     for(int i = 0; i < DEFAULT_NUM_OF_PARALLAX_PARTS; i++){
-      ParallaxHardware(serialPortNumber++, parallaxParts[i], operatingSystem); 
+      parallaxPartNumber = parallaxParts[i];
+      ParallaxHardware(serialPortNumber++, parallaxPartNumber, operatingSystem); 
     }//END FOR LOOP
       
 
@@ -116,15 +122,26 @@ public class ParallaxHardware {
    * TO-DO: ???
    */
   public int IntializeUltrasonicSensors(int bootMode, double verNum, int parrallaxPartNumber, int numOfSensors){
-
-     //TO-DO: return InfiniFill.ERROR_CODE_??? 
+     
+    BootUpChecks(bootMode, verNum);
+      
     
+    switch(parrallaxPartNumber){
+      case 28015:
+        
+        break;   
+      default:
+        if(Baristo.DEBUG_STATEMENTS_ON) System.out.println("You attempted to use an unsupported Parallax ultrasonic sensor.");
+        return UNSUPPORTED_PARALLAX_PART_NUMBER;
+
+    }//END SWTICH STATEMENT
+     
     return Baristo.OK; //No errors connection made
   }//END IntializeUltrasonicSensor FUNCTION
 
 
   public int ScanForRFIDTag(){
-  	String tag = "0xFFFFFFFF";
+    String tag = "0xFFFFFFFF";
     //TO-DO: tag = ReadTag(); 
     //TO-DO: SearchTagDatabase(tag);
 
@@ -133,9 +150,35 @@ public class ParallaxHardware {
     return Baristo.OK; //No errors connection made
   }//END ScanRFID() FUNCTION  
 
+  /**
+   * @brief Perform check on kioks software version and debug print statement settings 
+   *
+   * @param bootMode Select mode kiosk should boot up in
+   * @param verNum High level hardware kiosk version number 
+   *
+   * @section DESCRIPTION
+   *
+   * TO-DO: ???
+   */
+  private int BootUpChecks(int bootMode, double verNum){
+    
+    if (bootMode == Baristo.PRODUCTION) Baristo.DEBUG_STATEMENTS_ON = false;
+    else Baristo.DEBUG_STATEMENTS_ON = true;  
 
-  public int DetermineCupPosition(){
-
-  }//END DetermineCupPosition() FUNCTION
+    if (verNum > Baristo.CURRENT_KIOSK_HW_VERSION){
+      if(Baristo.DEBUG_STATEMENTS_ON){
+        System.out.println("You attempted to run non-public and unsupported software.");
+        System.out.println("50 is coming for you :)");
+      }
+    }
+    else if (verNum < Baristo.LOWEST_SUPPORTED_KIOSK_HW_VERSION){
+      if(DEBUG_STATEMENTS_ON){
+        System.out.println("You attempted to run old unsupported software.");
+        System.out.println("Please download newest open source code from https://github.com/ROBO-BEV/Baristo.");
+      }
+      return ERROR_CODE_OLD_VERSION_NUMBER;
+    }
+  }//END BootUpChecks() FUNCTION
+     
 
 }//END ParallaxHardware CLASS

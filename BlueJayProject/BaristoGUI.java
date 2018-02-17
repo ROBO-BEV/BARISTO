@@ -1,8 +1,8 @@
 /**
  * @file     BaristoGUI.java
  * @author   Blaze Sanders (@ROBO_BEV)
- * @email    blaze@infinifill.com
- * @updated  06 FEB 2018
+ * @email    founders@robobev.com
+ * @updated  16 FEB 2018
  *
  * @version 0.1
  * @brief GUI interface for the Baristo coffee kiosk built using the NetBeans GUI builder.

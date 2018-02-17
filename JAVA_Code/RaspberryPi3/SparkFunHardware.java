@@ -18,7 +18,7 @@ public class SparkFunHardware {
 
   //SparkFun Part Number Constants
   public static int DEFAULT_NUM_OF_SPARKFUN_PARTS = 1;           //THREE ultrasonic sensors & ONE RFID transciever
-  public static final int RFID_TX_RX_PN09963 = 09963;            //TO-DO: Add link
+  public static final int RFID_TX_RX_PN09963 = 9963;            //TO-DO: Add link
   public static final int RFID_TAG_PN1234 = 1234;                //TO-DO: Find rectangular card
   /**
    * @brief Default SparkFun Hardware object constructor 
