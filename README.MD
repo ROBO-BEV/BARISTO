@@ -16,6 +16,27 @@ JAVA_Code: Highest level code which was designed to run on a Raspberry Pi 3 B+, 
 
 @link https://developer.nvidia.com/embedded/buy/jetson-tx2
 
+@link https://www.ics.com/blog/getting-started-mraa-raspberry-pi
+
+@link https://github.com/horst3180/arc-theme/issues/63
+
+checking for pcre-config... no
+configure: error: in `/home/pi/Documents/IoT/swig':
+configure: error: 
+        Cannot find pcre-config script from PCRE (Perl Compatible Regular Expressions)
+        library package. This dependency is needed for configure to complete,
+        Either:
+        - Install the PCRE developer package on your system (preferred approach).
+        - Download the PCRE source tarball, build and install on your system
+          as you would for any package built from source distribution.
+        - Use the Tools/pcre-build.sh script to build PCRE just for SWIG to statically
+          link against. Run 'Tools/pcre-build.sh --help' for instructions.
+          (quite easy and does not require privileges to install PCRE on your system)
+        - Use configure --without-pcre to disable regular expressions support in SWIG
+          (not recommended).
+
+javac -cp ~/Documents/IoT/mraa/build/src/java/mraa.jar:. Example.java
+
 
 To run the code in JAVA_Code directory complete the following steps:
 1. In a Linux or Windows Cygwin terminal, run the command "javac Baristo.java" to compile all JAVA code (Need help? https://goo.gl/aED8Dw)
