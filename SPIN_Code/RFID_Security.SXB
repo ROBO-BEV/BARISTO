@@ -1,0 +1,265 @@
+' =========================================================================
+'
+'   File...... RFID_Security.SXB
+'   Purpose... Parallax RFID Reader Demo
+'   Author.... (c) Parallax, Inc. -- All Rights Reserved 
+'   E-mail.... support@parallax.inc
+'   Started...
+'   Updated... 14 NOV 2005
+'
+' =========================================================================
+
+
+' -------------------------------------------------------------------------
+' Program Description
+' -------------------------------------------------------------------------
+'
+' Simple security application using the Parallax RFID reader and the 
+' Parallax Serial LCD. As designed, the application will support 16 
+' RFID tags.
+'
+' Connections:
+'
+'   RA.0 ----> Parallax Serial LCD
+'   RA.1 ----> RFID Enable\
+'   RA.2 <---- RFID Sout
+'   RA.3 ----> Latch control (LED for demo)
+'
+' Components:
+'
+'   Parallax RFID Reader... #28140
+'   Parallax Serial LCD.... #27976 or #27977 
+
+
+' -------------------------------------------------------------------------
+' Device Settings
+' -------------------------------------------------------------------------
+
+DEVICE          SX28, OSCXT2, TURBO, STACKX, OPTIONX
+FREQ            4_000_000
+
+
+' -------------------------------------------------------------------------
+' IO Pins
+' -------------------------------------------------------------------------
+
+LcdTx		VAR	RA.0			' LCD serial connection
+RfidEn		VAR	RA.1			' RFID enable control
+RfidRx		VAR	RA.2			' RFID serial input
+Lock		VAR	RA.3			' lock control
+
+
+' -------------------------------------------------------------------------
+' Constants
+' -------------------------------------------------------------------------
+
+TagMax		CON	2			' three tags, (0 - 2)
+
+LcdBaud		CON	"T19200"		' or T2400, or T9600
+RfidBaud	CON	"T2400"
+
+LcdBkSpc        CON     $08             	' move cursor left
+LcdRt           CON     $09             	' move cursor right
+LcdLF           CON     $0A             	' move cursor down 1 line
+LcdCls          CON     $0C             	' clear LCD (need 5 ms delay)
+LcdCR           CON     $0D             	' move pos 0 of next line
+LcdBLon         CON     $11             	' backlight on
+LcdBLoff        CON     $12             	' backlight off
+LcdOff          CON     $15             	' LCD off
+LcdOn1          CON     $16             	' LCD on; no crsr, no blink
+LcdOn2          CON     $17             	' LCD on; no crsr, blink on
+LcdOn3          CON     $18             	' LCD on; crsr on, no blink
+LcdOn4          CON     $19             	' LCD on; crsr on, blink on
+LcdLine1        CON     $80             	' move to line 1, column 0
+LcdLine2        CON     $94             	' move to line 2, column 0
+
+Active		CON	0			' for RFID reader
+Deactivated	CON	1
+
+Open		CON	1			' for lock
+Closed		CON	0
+
+
+' -------------------------------------------------------------------------
+' Variables
+' -------------------------------------------------------------------------
+
+idx1            VAR     Byte			' loop control
+idx2            VAR     Byte
+char            VAR     Byte
+
+tagBuf		VAR	Byte(10)		' tag bytes from reader
+tagNum		VAR	Byte			' tag number
+offset		VAR	Byte
+
+temp1		VAR	Byte			' subroutine work vars
+temp2		VAR	Byte
+temp3		VAR	Byte
+temp4		VAR	Byte
+temp5		VAR	Byte
+
+
+' =========================================================================
+  PROGRAM Start
+' =========================================================================
+
+
+' -------------------------------------------------------------------------
+' Subroutine Declarations
+' -------------------------------------------------------------------------
+
+WAIT_MS		SUB	1, 2			' delay in milliseconds
+LCD_OUT		SUB	1, 2			' byte or string to LCD
+CLEAR_LCD	SUB				' clear LCD, BL is on
+RX_RFID		SUB				' get char from RFID
+
+
+' -------------------------------------------------------------------------
+' Program Code
+' -------------------------------------------------------------------------
+
+Start:
+  PLP_B = %00000000				' pull up unused pins
+  PLP_C = %00000000
+
+  RA = %0011					' disable reader, lock it up
+  TRIS_A = %0100
+  WAIT_MS 100					' let LCD initialize
+
+Main:
+  CLEAR_LCD
+  LCD_OUT "Present ID."
+  LCD_OUT LcdLine2
+  LCD_OUT LcdOn2				' flash block cursor
+
+Get_Tag:
+  RfidEn = Active
+  DO 
+    char = RX_RFID				' get a character
+  LOOP UNTIL char = $0A				' wait for header
+  FOR idx1 = 0 TO 9				' get RFID bytes
+    tagBuf(idx1) = RX_RFID
+  NEXT
+  RfidEn = Deactivated
+
+Search_Tags:
+  FOR tagNum = 0 TO TagMax			' loop through known tags
+    offset = tagNum * 10			' point to tag string
+    FOR idx1 = 0 TO 9				' loop through characters
+      READ Tags + offset, char			' read tag character
+      INC offset				' point to next
+      IF char <> tagBuf(idx1) THEN Next_Tag	' if bad, skip rest
+    NEXT
+    GOTO Found_Tag				' if all valid, tag found
+    
+Next_Tag:
+  NEXT
+
+No_Tag:
+  CLEAR_LCD
+  LCD_OUT "Unauthorized"
+  GOTO Loop_Pad
+
+Found_Tag:
+  CLEAR_LCD
+  LCD_OUT "Authorized"
+
+Show_Name:
+  LCD_OUT LcdLine2
+  offset = tagNum << 4				' point to start of name
+  FOR idx1 = 0 TO 15
+    READ TagNames + offset, char		' get name character
+    INC offset					' point to next
+    LCD_OUT char				' send char to LCD
+  NEXT
+  Lock = Open
+
+Loop_Pad:
+  WAIT_MS 250, 12				' pause 3 seconds
+  Lock = Closed
+  GOTO Main
+
+
+' -------------------------------------------------------------------------
+' Subroutine Code
+' -------------------------------------------------------------------------
+
+' Use: WAIT_MS milliseconds {, multiplier }
+' -- multiplier is optional
+
+WAIT_MS:
+  temp1 = __PARAM1                              ' get milliseconds
+  IF __PARAMCNT = 1 THEN                        ' if no multiplier
+    temp2 = 1                                   '   set to 1
+  ELSE                                          ' else
+    temp2 = __PARAM2                            '   get multiplier
+  ENDIF
+  IF temp1 > 0 THEN                             ' no delay if either 0
+    IF temp2 > 0 THEN
+      PAUSE temp1 * temp2                       ' do the delay
+    ENDIF
+  ENDIF
+  RETURN
+
+' -------------------------------------------------------------------------
+
+' Use: LCD_OUT [ aByte | string | label ]
+' -- "aByte" is single-byte constant or variable
+' -- "string" is an embedded literal string
+' -- "label" is DATA statement label for stored z-String
+
+LCD_OUT:
+  temp1 = __PARAM1				' byte or offset
+  IF __PARAMCNT = 2 THEN			' string specified
+    temp2 = __PARAM2				' yes, save base
+    DO
+      READ temp2 + temp1, temp3             	' read a character
+      IF temp3 = 0 THEN EXIT                 	' if 0, string complete
+      SEROUT LcdTx, LcdBaud, temp3          	' send the byte
+      INC temp1                             	' point to next character
+      temp2 = temp2 + Z                     	' update base on overflow
+    LOOP
+  ELSE
+    SEROUT LcdTx, LcdBaud, temp1		' send the byte
+  ENDIF
+  RETURN
+
+' -------------------------------------------------------------------------
+
+' Use: CLEAR_LCD
+' -- clears the LCD and activates the backlight
+' -- removes cursor and blinking block
+
+CLEAR_LCD:
+  LCD_OUT LcdBLon				' backlight on
+  LCD_OUT LcdOn1				' no cursor or blink
+  LCD_OUT LcdCls				' clear the LCD
+  WAIT_MS 5
+  RETURN
+
+' -------------------------------------------------------------------------
+
+' Use: aByte = RX_RFID
+' -- receives on serial byte from RFID reader
+
+RX_RFID:
+  SERIN RfidRx, RfidBaud, temp1
+  RETURN temp1
+
+
+' =========================================================================
+' Program Data
+' =========================================================================
+
+Tags:	
+  DATA	"0415148F26"            		' valid tags
+  DATA	"041514A715"
+  DATA	"04151495C1"
+
+' Keep tag names 16-chars in length
+' -- name order must match tag order
+
+TagNames:
+  DATA	"Luke Skywalker  "
+  DATA	"Princess Leia   "
+  DATA	"Darth Vader     "
