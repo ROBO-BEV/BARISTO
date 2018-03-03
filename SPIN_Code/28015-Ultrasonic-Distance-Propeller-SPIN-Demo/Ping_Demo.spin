@@ -19,21 +19,22 @@
 
 CON
 
-  _clkmode = xtal1 + pll16x
-  _xinfreq = 5_000_000
+  {Propeller Timing Constants}
+  _clkmode = xtal1 + pll16x                ' Use crystal and multiple by 16 to get 80 MHz CPU
+  _xinfreq = 5_000_000                     ' Use 5MHz crystal
 
   {Ultrasonic Distance Sensor Hardware Constant(s)} 
-  PING_Pin = 20                                         ' I/O Pin For PING)))
+  PING_Pin = 20                            ' I/O Pin For PING)))
   
   {LCD Hardware Constants} 
-  LCD_Pin = 1                                           ' I/O Pin For LCD
-  LCD_Baud = 19_200                                     ' LCD Baud Rate
-  LCD_Lines = 4                                         ' Parallax 4X20 Serial LCD (#27979)
+  LCD_Pin = 1                              ' I/O Pin For LCD
+  LCD_Baud = 19_200                        ' LCD Baud Rate
+  LCD_Lines = 4                            ' Parallax 4X20 Serial LCD (#27979)
                                                         
 
   {LCD and Serial Terminal Formatting Constants} 
   #1, HOME, GOTOXY 
-  #8, BKSP, TAB, LF, CLREOL, CLRDN, CR                  'CR = Carriage Return
+  #8, BKSP, TAB, LF, CLREOL, CLRDN, CR     'CR = Carriage Return
   #14, GOTOX, GOTOY, CLS
   #30, TXpin, RXpin
   TERM_BAUD_RATE = 115200
@@ -53,7 +54,7 @@ OBJ
 PUB Main
 
   {Setup LCD harware and terminal software}
-  Term.start(RXpin, TXpin, %0000, 115_200)              ' Setup terminal via programming port 
+  Term.start(RXpin, TXpin, %0000, 115_200)              ' Setup terminal connection pin and baud rate
   LCD.init(LCD_Pin, LCD_Baud, LCD_Lines)                ' Initialize LCD Object
   LCD.cursor(0)                                         ' Turn Off Cursor
   LCD.backlight(true)                                   ' Turn On Backlight   
@@ -64,16 +65,17 @@ PUB Main
   Term.str(string("PING)))  Demo", CR, CR, "Inches      -", CR, "Centimeters -", CR))
   
   repeat                                                ' Repeat Forever
-    Term.str(string("TEST BEFORE PING"))                                               
+    Term.str(string("PING))) SENT"))                                               
     'LCD.gotoxy(15, 2)                                  ' Position Cursor
     range := Ping.Inches(PING_Pin)                      ' Get Range In Inches
-    Term.str(string("TEST AFTER PING")) 
     'LCD.decx(range, 2)                                  ' Print Inches
     'LCD.str(string(".0 "))                              ' Pad For Clarity
     Term.dec(range)
-    Term.str(string(".0 inches"))                              ' Pad For Clarity
-    'LCD.gotoxy(14, 3)                                   ' Position Cursor
+    Term.str(string("PING))) RECIEVED ")) 
+    Term.str(string(".0 inches"))                       ' Pad For Clarity
+    'LCD.gotoxy(14, 3)                                  ' Position Cursor
     range := Ping.Millimeters(PING_Pin)                 ' Get Range In Millimeters
+    Term.str(string(".0 millimeters"))                  ' Pad For Clarity
     'LCD.decf(range / 10, 3)                             ' Print Whole Part
     'LCD.putc(".")                                       ' Print Decimal Point
     'LCD.decx(range // 10, 1)                            ' Print Fractional Part

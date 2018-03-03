@@ -1,77 +1,59 @@
-'' @file    RFID_Main.spin
-'' @author  Blaze Sanders
-'' @email   blaze.d.a.sanders@gmail.com
-'' @updated 01 JAN 2018
-
-
-
-'' =================================================================================================
+'' @file    RFIS_Main.spin
+'' @author  Jon "JonnyMac" McPhalen & Blaze Sanders
+'' @created 23 SEP 2014 
+'' @updated 03 MARCH 2018
+'' @email   jon@jonmcphalen.com
+'' @email   founders@robobev.com
+'' 
+'' @section DESCRIPTION
+'' 
+'' Parallax Serial RFID main driver program for PROPELLER PROJECT BOARD USB Part Number 32810 REV D
+'' Use pins 25 and 26 with inline 3.9K resistors to prevent too much current 
+'' into the pins from the 5V RFID device.  
 ''
-''   File....... jm_rfid_demo.spin
-''   Purpose.... Parallax Serial RFID Reader demo for the Propeller Activity Board. 
-''               Use pins 16 and 17 as they have 3.9K resistors inline to prevent too much current 
-''               into the pins from the 5V RFID device. Make sure that the header power jumpers are 
-''               set to 5V (default), and to move the power switch to position 2 to power the headers. 
-''   Author..... Jon "JonnyMac" McPhalen
-''               Copyright (c) 2014 Jon McPhalen
-''               -- see below for terms of use
-''   E-mail..... jon@jonmcphalen.com
-''   Started.... 23 SEP 2014
-''   Updated.... 03 OCT 2014
-''
-'' =================================================================================================
+'' Version 1.1 - Updated March 3, 2018 by Blaze Sanders for PROPELLER PROJECT BOARD USB for ROBO BEV
+'' Version 1.0 - Updated Oct 03, 2014 by Jon "JonnyMac" McPhalen 
+'' 
+'' See end of file for terms of use
 
+CON 
 
-con { timing }
+  {Propeller Timing Constants}
+  _clkmode = xtal1 + pll16x                        ' Use crystal and multiple by 16 to get 80 MHz CPU
+  _xinfreq = 5_000_000                             ' use 5MHz crystal
 
-  _clkmode = xtal1 + pll16x
-  _xinfreq = 5_000_000                                          ' use 5MHz crystal
+  CLK_FREQ = ((_clkmode - xtal1) >> 6) * _xinfreq  ' Set system freq as a constant
+  MS_001   = CLK_FREQ / 1_000                      ' Set CPU ticks in 1 ms as a constant
+  US_001   = CLK_FREQ / 1_000_000                  ' Set CPU ticks in 1 us as a constant
 
-  CLK_FREQ = ((_clkmode - xtal1) >> 6) * _xinfreq               ' system freq as a constant
-  MS_001   = CLK_FREQ / 1_000                                   ' ticks in 1ms
-  US_001   = CLK_FREQ / 1_000_000                               ' ticks in 1us
-
-
-con { io pins }
-
-  RX1     = 31                                                  ' programming / terminal
-  TX1     = 30
+  {I2C and Serial Terminal Communication Constants} 
+  #0, LSBFIRST, MSBFIRST                           ' LITTLE or BIG endianness options
+  #1, HOME, GOTOXY,                                ' Terminal cursor position constants
+  #8, BKSP, TAB, LF, CLREOL, CLRDN, CR             ' Terminal formatting constants (CR = Carriage Return)
+  #14, GOTOX, GOTOY, CLS                           ' Terminal cursor position and screen clearing constants
+  #28, SCL, SDA, TXpin, RXpin                      ' Standard Propeller pin constants
   
-  SDA     = 29                                                  ' eeprom / i2c
-  SCL     = 28
-
-  RFID_RX = 17                                                  ' RFID on PAB
-  RFID_EN = 16
-  
-
-con
-
-  #0, LSBFIRST, MSBFIRST
-  
-
-con { pst formatting }
-
-   #1, HOME, GOTOXY, #8, BKSP, TAB, LF, CLREOL, CLRDN, CR
-  #14, GOTOX, GOTOY, CLS
-
-
-obj
+  {RFID Module Constants}
+  RFID_RX = 26                                     ' Serial data transmitted from RFID module to CPU on this pin
+  RFID_EN = 25                                     ' ENABLE & DISABLE RFID module with this pin
+ 
+OBJ
 
   term : "FullDuplexSerial" 
   rfid : "FullDuplexSerial"
   
 
-var
+VAR
           
 
-pub main | idx
+PUB Main | idx
 
-  setup                                                         ' start program objects
+  Setup                                                         ' start program objects
 
   repeat 
     repeat 2
       term.tx(CR)
-    term.str(string("Present tag:", CR))
+    term.str(string("Please place your smart cup on the black pad.", CR))
     
     accept_tag(@tagbuf)                                         ' wait for tag
     
@@ -86,16 +68,17 @@ pub main | idx
       term.str(string("-- "))
       term.str(@@Names[idx])
     else
-      term.str(string("-- Unknown tag"))
+      term.str(string("-- I can not find your smart cup."))
+      term.str(string("-- Please scan QR code to download BARISTO from the Google Play store and register with us."))
 
-    pause(3000) 
+    pause(2000)                 'Pause 2.0 seconds
     
 
-pub setup
+pub Setup
 
 '' Setup IO and objects for application
 
-  term.start(RX1, TX1, %0000, 115_200)                  ' terminal via programming port                 
+  term.start(RXpin, TXpin, %0000, 115_200)                  ' terminal via programming port                 
   rfid.start(RFID_RX, RFID_RX, %1100, 2400)             ' open-drain serial for RFID                         
 
 
@@ -108,7 +91,7 @@ con
 
 con
 
-  LAST_TAG = 3                                                  ' tag #s are 0..LAST_TAG
+ NUM_OF_TAGS = 3                         ' Number of RFID tags stored on CPU running this code
   
 
 var
@@ -140,10 +123,10 @@ pub accept_tag(p_buf) | c, idx
 pub get_tag_id(p_buf) | tidx, p_check, bidx
 
 '' Compares tag data in ram (at p_buf) with known tags
-'' -- returns tag index (0..LAST_TAG) if found
+'' -- returns tag index (0..NUM_OF_TAGS) if found
 '' -- returns -1 if tag not found
 
-  repeat tidx from 0 to LAST_TAG                                ' loop through known tags
+  repeat tidx from 0 to NUM_OF_TAGS                             ' loop through known tags
     p_check := @@Tags[tidx]                                     ' get hub address of tag being tested
     repeat bidx from 0 to 9                                     ' loop through bytes in tag
       if (byte[p_buf][bidx] <> byte[p_check][bidx])             ' if byte mismatch
@@ -161,7 +144,7 @@ dat { tags data }
   Tag2        byte      "041514AEA3"
   Tag3        byte      "041514A076"          
 
-  Tags        word      @Tag0, @Tag1, @Tag2, @Tag3
+  Tags        word      @Tag0, @Tag1, @Tag2, @Tag3 
 
 
   Name0       byte      "Luke Skywalker", 0
