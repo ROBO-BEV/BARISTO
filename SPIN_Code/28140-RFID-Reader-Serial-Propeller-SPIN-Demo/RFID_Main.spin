@@ -57,8 +57,8 @@ con { pst formatting }
 
 obj
 
-  term : "fullduplexserial" 
-  rfid : "fullduplexserial"
+  term : "FullDuplexSerial" 
+  rfid : "FullDuplexSerial"
   
 
 var
