@@ -1,7 +1,7 @@
 '' @file    Ping_Demo.spin
 '' @author  Chris Savage & Jeff Martin & Blaze Sanders
 '' @created 08 MAY 2006 
-'' @updated 10 MARCH 2018
+'' @updated 12 MARCH 2018
 '' @email   founders@robobev.com
 '' 
 '' @version 1.4
@@ -42,15 +42,22 @@ CON
   DEBUG_STATEMENTS_ON = 1
 
   {Distance Constants in millimeters}
-  DISTANCE_TO_PLATFORM =  200              
-  DISANCE_TO_EMPTY_SMART_CUP = 180
+  DISTANCE_TO_PLATFORM =  200                  'Z axis distance  
+  DISTANCE_TO_EMPTY_SMART_CUP = 180
   DISTANCE_TO_FULL_SMART_CUP = 50
   DISTANCE_TO_SMART_CUP_WITH_LID_ON = 45
-   
+  MAX_Y_POSITION = 20
+  MIN_Y_POSITION = 5
+  MAX_X_POSITION = 30
+  MIN_X_POSITION = 20 
+  
 VAR
 
-  long  mmRangeZaxis, mmRangeYaxis, mmRangeXaxis
-  byte  ultrasonicsReadyToDispense
+  long mmRangeZaxis
+  long mmRangeYaxis
+  long mmRangeXaxis
+  long fillPercentage
+  byte ultrasonicsReadyToDispense
     
 OBJ
 
@@ -63,9 +70,9 @@ PUB Main
   {Setup PING harware and terminal software}
   Term.start(RXpin, TXpin, %0000, 115_200)              ' Setup terminal connection pin and baud rate
   Term.str(string("Starting BARISTO PING sensors", CR))
-  DIRA[ULTRASONICS_READY_TO_DISPENSE_PIN]~~             ' Make GPIO an output pin
+  DIRA[ULTRASONICS_READY_TO_DISPENSE_PIN]~~             ' Make GPIO as output pin
   OUTA[ULTRASONICS_READY_TO_DISPENSE_PIN]~              ' Initialize output pin LOW
-  ultrasonicsReadyToDispense = 0x00                     ' Intialize all three ultrasonic sensors to NOT READY (0x0000_0XYZ) 
+  ultrasonicsReadyToDispense := %0000_0000              ' Intialize all three ultrasonic sensors to NOT READY (0x0000_0XYZ) 
 
   repeat                                                ' Repeat forever in one of eigth Propeller COGs / CPUs
     Term.str(string("Z axis PING))) SENT"))                                               
@@ -87,32 +94,31 @@ PUB Main
     Term.str(string("Y axis PING))) RECIEVED")) 
 
 
-    IF mmRange <= DISTANCE_TO_SMART_CUP_WITH_LID_ON
+    IF mmRangeZaxis <= DISTANCE_TO_SMART_CUP_WITH_LID_ON
       Term.str(string("Your lid is still on my young apprentice, pleasse remove."))
       waitcnt(clkfreq*2 + cnt)                           ' Pause for 2 seconds
     ELSEIF mmRangeZaxis <= DISTANCE_TO_PLATFORM          ' A smart or random object is present on platform
-      ultrasonicsReadyToDispense = ultrasonicsReadyToDispense OR 0b0000_0001
+      ultrasonicsReadyToDispense := ultrasonicsReadyToDispense OR %0000_0001
       IF mmRangeZaxis <= DISTANCE_TO_FULL_SMART_CUP      ' Cup is full of liquid
-        OUTA[ULTRASONICS_READY_FOR_DISPENSE_PIN]~        ' Make READY pin LOW                           
+        OUTA[ULTRASONICS_READY_TO_DISPENSE_PIN]~         '  Make READY pin LOW                           
         IF DEBUG_STATEMENTS_ON 
           Term.str(string("sCup 1 is full. Please remove from pad and screw on lid"))        
-          ultrasonicsReadyToDispense = ultrasonicsReadyToDispense AND 0b0000_1110
+          ultrasonicsReadyToDispense := ultrasonicsReadyToDispense AND %0000_1110
       ELSEIF mmRangeZaxis <= DISTANCE_TO_EMPTY_SMART_CUP ' Cup is preseent but not full of liquid
-        IF MIN_Y_POSITION <= mmRangeYaxis AND mmRangeYaxis <= MAX_Y_POSITION     
+        IF MIN_Y_POSITION < mmRangeYaxis AND mmRangeYaxis < MAX_Y_POSITION     
           IF DEBUG_STATEMENTS_ON 
             Term.str(string("sCup 1 is centered front to back."))
-            ultrasonicsReadyToDispense = ultrasonicsReadyToDispense OR 0b0000_0010
+            ultrasonicsReadyToDispense := ultrasonicsReadyToDispense OR %0000_0010
         ELSEIF mmRangeYaxis < MIN_Y_POSITION
           IF DEBUG_STATEMENTS_ON 
             Term.str(string("Cup NOT centered, please move cup towards you."))
         ELSE
           IF DEBUG_STATEMENTS_ON 
             Term.str(string("Cup NOT centered, please move cup away from you."))
-
-        IF MIN_X_POSITION <= mmRangeXaxis AND mmRangeXaxis <= MAX_X_POSITION     
+        IF MIN_X_POSITION < mmRangeXaxis AND mmRangeXaxis < MAX_X_POSITION   
           IF DEBUG_STATEMENTS_ON 
             Term.str(string("sCup 1 is centered left to right."))
-            ultrasonicsReadyToDispense = ultrasonicsReadyToDispense OR 0b0000_0100
+            ultrasonicsReadyToDispense := ultrasonicsReadyToDispense OR %0000_0100
         ELSEIF mmRangeXaxis < MIN_X_POSITION
           IF DEBUG_STATEMENTS_ON 
             Term.str(string("Cup NOT centered, please move cup to your left."))
@@ -120,14 +126,14 @@ PUB Main
           IF DEBUG_STATEMENTS_ON 
             Term.str(string("Cup NOT centered, please move cup to your right."))
 
-
-     IF ultrasonicsReadyToDispense AND 0b0000_0111 == 0x07
-       OUTA[ULTRASONICS_READY_FOR_DISPENSE_PIN]~~       ' Make READY pin HIGH                   
+     IF ultrasonicsReadyToDispense AND %0000_0111 == %0000_0111
+       OUTA[ULTRASONICS_READY_TO_DISPENSE_PIN]~~         ' Make READY pin HIGH                   
        IF DEBUG_STATEMENTS_ON 
           Term.str(string("Filling cupp: "))
-          Term.dec((mmRange/DISTANCE_TO_EMPTY_SMART_CUP) - DISTANCE_TO_FULL_SMART_CUP)
+          fillPercentage := (mmRangeZaxis / DISTANCE_TO_EMPTY_SMART_CUP) - DISTANCE_TO_FULL_SMART_CUP
+          Term.dec(fillPercentage)
           Term.str(string("% full", CR))
-          waitcnt(clkfreq/2 + cnt)                     ' Pause 0.5 second to slow down print statements
+          waitcnt(clkfreq/2 + cnt)                       ' Pause 0.5 second to slow down print statements
       
     waitcnt(clkfreq / 10 + cnt)                          ' Pause 1/10 Second to reduce COG/CPU load
     

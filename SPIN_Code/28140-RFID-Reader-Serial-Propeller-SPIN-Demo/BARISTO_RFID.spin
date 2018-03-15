@@ -28,7 +28,7 @@ CON
 
   {I2C and Serial Terminal Communication Constants} 
   #0, LSBFIRST, MSBFIRST                           ' LITTLE or BIG endianness options
-  #1, HOME, GOTOXY,                                ' Terminal cursor position constants
+  #1, HOME, GOTOXY                                 ' Terminal cursor position constants
   #8, BKSP, TAB, LF, CLREOL, CLRDN, CR             ' Terminal formatting constants (CR = Carriage Return)
   #14, GOTOX, GOTOY, CLS                           ' Terminal cursor position and screen clearing constants
   #28, SCL, SDA, TXpin, RXpin                      ' Standard Propeller pin constants
@@ -38,6 +38,9 @@ CON
   RFID_EN = 25                                     ' ENABLE & DISABLE RFID module with this pin
   NUM_OF_TAGS = 3                                  ' Number of RFID tags stored on CPU running this code
  
+  {Linux OS Pin Constants}
+  USER_RFID_READY_PIN = 24
+
 OBJ
 
   Term : "FullDuplexSerial" 
@@ -51,34 +54,40 @@ PUB Main | idx
 
   Setup                                                         ' Initiliaze hardware
 
-  repeat                                                        ' Loop forever in GOG/CPU for 
+  REPEAT                                                        ' Loop forever in GOG/CPU for 
     Term.str(string("Please place your smart cup on the black pad.", CR))
     
     accept_tag(@tagbuf)                                         ' Wait for tag to be place above transciever
     
     Term.str(string("Scanned Tag ID: "))                        ' Display tag string
-    repeat idx from 0 to 9
+    REPEAT idx from 0 to 9
       Term.tx(byte[@tagbuf][idx])
     Term.tx(CR)
     
     idx := get_tag_id(@tagbuf)                                  ' Lookup tag
     
-    if (idx => 0)                                               ' Print name linked to tag
+    IF (idx => 0)                                               ' Print name linked to tag
       Term.str(string("Hello "))
       Term.str(@@Names[idx])
-    else
+      OUTA[USER_RFID_READY_PIN]~~                               ' Make READY pin HIGH
+    ELSE
       Term.str(string("-- I can not find your smart cup."))
       Term.str(string("-- Please scan QR code to download BARISTO from the Google Play store and register with us."))
-
-    pause(500)                                                  'Pause 0.5 seconds to reduce GOG/CPU load
     
-'' @brief Configure Parallax debug terminal and Parallax RFID transciever for use
+    IF OUTA[USER_RFID_READY_PIN] == 1 
+      Term.str(string("Please remove your smart cup from platform and replace lip"))
+      pause(3000)                                                 ' Pause 3 seconds to reduce GOG/CPU load and allow user to remove their cup
+      OUTA[USER_RFID_READY_PIN]~                                  ' Reset RFID READY pin to low for next smart cup
+   
+'' @brief Configure Parallax debug terminal and Parallax RFID transciever hardware
 ''
 '' @param NONE
 ''
 '' @return NOTHING
 ''
 PUB Setup
+  DIRA[USER_RFID_READY_PIN]~~                           ' Make GPIO as output pin
+  OUTA[USER_RFID_READY_PIN]~                            ' Initialize output pin as LOW
 
   Term.start(RXpin, TXpin, %0000, 115_200)              ' Terminal via programming port                 
   RFID.start(RFID_RX, RFID_RX, %1100, 2400)             ' Open-drain serial for RFID                      
@@ -127,7 +136,7 @@ PRI get_tag_id(p_buf) | tidx, p_check, bidx
   
 ''User RFID tag data  
 ''TO-DO: Generate new data by using accept_tag function above
-''TO-DO: Encyrpt for transmission over the internet
+''TO-DO: Encyrpt for transmission over the internet using OpenSSL 
 DAT
 
   Tag0        byte      "0415148F26"
@@ -180,6 +189,9 @@ DAT
   Names       word      @Name0, @Name1, @Name2, @Name3, @Name4, @Name5, @Name6, @Name7, @Name8, @Name9, @Name10, @Name11, @Name12, @Name13, @Name14, @Name15, @Name16, @Name17, @Name18, @Name19, @Name20      
 
 
+
+{PUBLIC WRAPPER FUNCTIONS WRITTEN BY JON MCPHALEN THAT BLAZE SANDERS MADE PRIVATE} 
+
 PRI pause(ms) | t
 
 '' Delay program in milliseconds
@@ -223,24 +235,21 @@ PRI input(pin)
   dira[pin] := 0
 
   return ina[pin]
-  
-
-{{Terms of Use: MIT License
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy of this
-  software and associated documentation files (the "Software"), to deal in the Software
-  without restriction, including without limitation the rights to use, copy, modify,
-  merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-  permit persons to whom the Software is furnished to do so, subject to the following
-  conditions:
-
-  The above copyright notice and this permission notice shall be included in all copies
-  or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-  PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-  OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
+{{
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                   TERMS OF USE: MIT License                                                  │                                                            
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation    │ 
+│files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,    │
+│modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software│
+│is furnished to do so, subject to the following conditions:                                                                   │
+│                                                                                                                              │
+│The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.│
+│                                                                                                                              │
+│THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE          │
+│WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR         │
+│COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,   │
+│ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                         │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 }}  
