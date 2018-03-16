@@ -20,6 +20,12 @@ JAVA_Code: Highest level code which was designed to run on a Raspberry Pi 3 B+, 
 
 @link https://github.com/horst3180/arc-theme/issues/63
 
+@link https://www.microsoft.com/en-us/store/p/ubuntu/9nblggh4msv6?rtc=1
+
+Ubuntu on Windows allows one to use Ubuntu Terminal and run Ubuntu command line utilities including bas, ssh, git, apt-get, etc
+Location of Ubuntu home directoty on the Windows file system
+C:\Users\"user name"\AppData\Local\Packages\CanonicalGroupLimited.UbuntuonWindows_79rhkp1fndgsc\LocalS$
+
 checking for pcre-config... no
 configure: error: in `/home/pi/Documents/IoT/swig':
 configure: error: 
@@ -39,7 +45,7 @@ javac -cp ~/Documents/IoT/mraa/build/src/java/mraa.jar:. Example.java
 
 
 To run the code in JAVA_Code directory complete the following steps:
-1. In a Linux or Windows Cygwin terminal, run the command "javac Baristo.java" to compile all JAVA code (Need help? https://goo.gl/aED8Dw)
+1. In a Linux or Ubuntu on Windows terminal, run the command "javac Baristo.java" to compile all JAVA code (Need help? https://goo.gl/aED8Dw)
 2. Next run the command "java Baristo" to start kiosk JAVA software running.  
 3. Enter ternimal input as prompted from the EngineeringTerminal Class and have fun.
 
