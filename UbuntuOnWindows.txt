@@ -1,5 +1,0 @@
-Ubuntu on Windows allows one to use Ubuntu Terminal and run Ubuntu command line utilities including bash, ssh, git, apt, etc
-https://www.microsoft.com/en-us/store/p/ubuntu/9nblggh4msv6?rtc=1
-
-Location of Ubuntu home directoty on the Windows file system
-C:\Users\blaze\AppData\Local\Packages\CanonicalGroupLimited.UbuntuonWindows_79rhkp1fndgsc\LocalState\rootfs\home\blaze>
