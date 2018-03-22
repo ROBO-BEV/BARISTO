@@ -12,7 +12,7 @@
  *
  * @section DESCRIPTION
  *
- * Yes we are programming a coffee robot in JAVA..script
+ * Yes we are programming a coffee robot in JAVA..script TEST
  *
  */
 
