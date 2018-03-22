@@ -21,40 +21,6 @@ import * as Typings from "@4th-law/typings-public"
 import * as config from "config"
 import * as rpio from "rpio"
 
-const DEBUG_STATEMENTS_ON = true
-
-//Pin value constants
-const LOW =  0   
-const HIGH = 1
-const UNDEFINED = -1
-//TO-DO: const PWM_TWO_PERCENT to PWM_HUNDRED_PERCENT in two percent steps
-
-//Button state constants
-const PRESSED = 1
-const NOT_PRESSED = 0
-const HELD = 2
-
-//Pin direction constants
-const INPUT_PIN = 0
-const OUTPUT_PIN = 1
-//TO-DO: const PWM 2
-
-//Raspberry Pi B+ refernce pin constants as defined in ???rc.local script???
-const NUM_GPIO_PINS = 8                   //Outputs: GPO0 to GPO3 Inputs: GPI0 to GPI3
-const MAX_NUM_A_OR_B_PLUS_GPIO_PINS = 40  //Pins 1 to 40 on Raspberry Pi A+ or B+ 
-const MAX_NUM_A_OR_B_GPIO_PINS = 26       //Pins 1 to 26 on Raspberry Pi A or B 
-const NUM_OUTPUT_PINS = 4                 //This software instance of Raspberry Pi can have up to four output pins
-const NUM_INPUT_PINS = 4                  //This software instance of Raspberry Pi can have up to four input pins
-const GPIO1 = 0                           //Raspberry Pi Connector J? P? 
-const GPI1 = 1                            //Raspberry Pi Connector J? P? 
-const GPI2 = 2                            //Raspberry Pi Connector J? P? 
-const GPI3 = 3                            //Raspberry Pi Connector J? P? 
-const GPI4 = 4                            //Raspberry Pi Connector J? P? 
-const GPO1 = 5                            //Raspberry Pi Connector J? P? 
-const GPO2 = 6                            //Raspberry Pi Connector J? P? 
-const GPO3 = 7                            //Raspberry Pi Connector J? P? 
-const GPO4 = 8                            //Raspberry Pi Connector J? P? 
-
 /**
  * @param {NProfile.ECategory} _category - tells us if this is a sensor or actuator
   * @param {NProfile.EType} _type - tells us what kind of sensor this is (optical, mechanical, etc. see @4th-law/typings)
