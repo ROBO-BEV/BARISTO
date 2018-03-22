@@ -42,12 +42,12 @@ const GPIO3 = 11                          //Raspberry Pi Connector J? P?
 
 
 //??? Whys is this code both in index.ts and PING_28015.ts  
-export default class AT42QT1070 extends Typings.Sensor {
+export default class PING_28015 extends Typings.Sensor {
   protected _category = "SENSOR" as NProfile.ECategory; // sets where the information is coming from/going to (Sensor or Actuator)
   protected _type = "ELECTRICAL" as NProfile.EType;     // indicates what type of Sensor/Actuator the information is from/for
-  protected _make = "Adafruit";                         // indicates the manufacturer of the Sensor/Actuator
-  protected _model = "1362";                            // indicates the model type (e.g. make: Ford, model: F150)
-  protected _id = "AT42QT1070";                         // indicates the specific product ID (like a car's VIN)
+  protected _make = "Parallax";                         // indicates the manufacturer of the Sensor/Actuator
+  protected _model = "PING";                            // indicates the model type (e.g. make: Ford, model: F150)
+  protected _id = "28015";                         // indicates the specific product ID (like a car's VIN)
   protected _version = "v1.0.0";                        // indicates the 4th Law profile version
   protected _sampleFrequency = 600;                     // sets the rate at which data is retrieved or sent (optional parameter)
   protected _lastDataPoint: any;
@@ -108,4 +108,4 @@ export default class AT42QT1070 extends Typings.Sensor {
   }//END displayAllInputPins() FUNCTION
 
 
-}//END Profile_Test_Sensor CLASS
+}//END CLASS
