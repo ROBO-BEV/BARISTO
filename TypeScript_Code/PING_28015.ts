@@ -61,7 +61,27 @@ export default class PING_28015 extends Typings.Sensor {
   }//END ONE PARAMETER CONSTRUCTOR
 
   
-  /* TO-DO: CHANGE pin and return type to Uint8Array https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays
+  /** TO-DO: CHANGE pin and return type to Uint8Array https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays
+   * @brief Calculate the distance to the closet object to the PING ultracsonic sensor
+   * 
+   * @note Interrupts aren't supported by the underlying hardware, so events may be missed during the 1ms poll window.  The best we can do is to print the current state after a event is detected.
+   *
+   * @param pin Raspberry Pi B+ combine INPUT & OUTPUT pin name constant (i.e. GPIO1, GPIO2, GPIO3) 
+   * 
+   * @return Distance to closet object to resolution of 5 mm
+   */
+  public mmDistance(pin = GPIO1): number{
+    rpio.open(pin, rpio.OUTPUT, rpio.LOW)  //Calls rpio.init([options]) automatically    
+    rpio.write(pin, rpio.HIGH)     
+    rpio.usleep(10)  //rpio.msleep(1) is uSeconds are not supported
+    rpio.write(pin, rpio.LOW)  
+    
+    var echoTime = rpio.read(pin) //Is this going to read fast enough to get 5 mm resoltuion
+    rpio.open(pin, rpio.INPUT, rpio.PULL_DOWN)  //Calls rpio.init([options]) automatically
+  }
+
+
+  /** TO-DO: CHANGE pin and return type to Uint8Array https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays
    * @brief Read the currect logic level (HIGH or LOW) on an button press.
    * 
    * @note Interrupts aren't supported by the underlying hardware, so events may be missed during the 1ms poll window.  The best we can do is to print the current state after a event is detected.
@@ -88,7 +108,7 @@ export default class PING_28015 extends Typings.Sensor {
 
 
  /*
-  * @brief Print the logic levels of all four GPIO input pins
+  * @brief Print the logic levels of all four GPIO input pins and all three combined GPIO input & output pins
   * 
   * @param NONE
   * 
