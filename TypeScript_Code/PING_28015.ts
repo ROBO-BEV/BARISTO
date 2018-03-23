@@ -15,6 +15,12 @@ const PRESSED = 1
 const NOT_PRESSED = 0
 const HELD = 2
 
+//Ping Ultrasonic Sensor constants
+const INVALID_STATE = -1
+const PING_SENT = 0
+const PING_RECIEVED = 1
+const MM_SOUND_MSL_CONSTANT = 22600       //TO-DO: Figure out why?
+
 //Pin direction constants
 const INPUT_PIN = 0
 const OUTPUT_PIN = 1
@@ -70,14 +76,40 @@ export default class PING_28015 extends Typings.Sensor {
    * 
    * @return Distance to closet object to resolution of 5 mm
    */
-  public mmDistance(pin = GPIO1): number{
-    rpio.open(pin, rpio.OUTPUT, rpio.LOW)  //Calls rpio.init([options]) automatically    
+  public GetDistanceMM(pin = GPIO1): number{
+    //Toggle SIG pin high to start measurement process
     rpio.write(pin, rpio.HIGH)     
-    rpio.usleep(10)  //rpio.msleep(1) is uSeconds are not supported
+    rpio.usleep(1)                              //=usleep(73) Community benchmarks suggest that the cost for usleep() is 72 microseconds on raspi-3
     rpio.write(pin, rpio.LOW)  
-    
-    var echoTime = rpio.read(pin) //Is this going to read fast enough to get 5 mm resoltuion
+
+    //Switch SIG pin from output pint to input pin
     rpio.open(pin, rpio.INPUT, rpio.PULL_DOWN)  //Calls rpio.init([options]) automatically
+
+    //Start waiting for echo bounce back
+    var echoTime = rpio.poll(pin, PollPING)     //Is this going to read fast enough to get 5 mm resoltuion
+    while(echoTime != INVALID_STATE)
+      rpio.usleep(1)                            //Pause to reduce CPU load
+    return (echoTime * MM_SOUND_MSL_CONTSTANT)  //Varying depending on air density (MSL = Mean Sea Level)
+  }
+    
+
+  /** TO-DO: CHANGE pin and return type to Uint8Array https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays
+   * @brief Calculate the distance to the closet object to the PING ultracsonic sensor
+   * 
+   * @note Interrupts aren't supported by the underlying hardware, so events may be missed during the 1ms poll window.  The best we can do is to print the current state after a event is detected.
+   *
+   * @param pin Raspberry Pi B+ combine INPUT & OUTPUT pin name constant (i.e. GPIO1, GPIO2, GPIO3) 
+   * 
+   * @return Distance to closet object to resolution of 5 mm
+   */
+
+  private PollPING(pin = GPOI1, state = PING_SENT): number{  
+    if(state == PING_SENT)
+      //TO-DO: Start system timer not dependent on function scope
+      return INVALID_STATE
+    if(state == PING_RECIEVED)
+      //TO-DO: Stop system timer not dependent on function scope
+      return pingElaspsedTime  
   }
 
 

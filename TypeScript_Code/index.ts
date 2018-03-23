@@ -76,18 +76,19 @@ export default class PING_28015 extends Typings.Sensor {
     this._specs = {}
 
     const GPIOpins = new PING_28015()
-    rpio.open(pin, rpio.INPUT, rpio.PULL_DOWN)  //Calls rpio.init([options]) automatically 
+    rpio.open(pin, rpio.OUTPUT, rpio.LOW) //Calls rpio.init([options]) automatically
   
-    //Print pin status and distance every 1000 ms
+    //Print pin status and distance every 200 ms
     setInterval(() => {
       if(DEBUG_STATEMENTS_ON){
-        pinState = GPIOpins.readInputButtonState(pin)
-        console.log('Input pin P' + pin + ' is currently set to ' + (pinState ? 'HIGH' : 'LOW'))
-        
+        var mmDistanceX = GetDistanceMM(GPIO1)
+        var mmDistanceY = GetDistanceMM(GPIO2)
+        var mmDistanceZ = GetDistanceMM(GPIO3)
+
         //TO-DO: What happens when more then one PING ultrasonic is attached to Pi 3?
         console.log('Measured distance for PING sensor #' + this._id + ??? + ' is ' + this._lastDataPoint + ' millimeters.') 
-      }
-    }, 1000) //END SetInterval()
+      } 
+    }, 200) //END SetInterval()
 
   }//END CONSTRUCTOR
 }//END CLASS
