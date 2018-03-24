@@ -3,12 +3,13 @@
  * @file     index.ts
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@robobev.com
- * @updated  22 MAR 2018
+ * @updated  23 MAR 2018
  *
  * @version 0.1
- * @brief PING ultrasonic sensor for ROBO BEV BARISTO coffee kiosk
+ * @brief 4th Law index.ts file for ROBO BEV BARISTO coffee kiosk
  *
  * @link https://www.robobev.com
+ * @link https://www.npmjs.com/package/rpio
  *
  * @section DESCRIPTION
  *
@@ -86,6 +87,8 @@ export default class PING_28015 extends Typings.Sensor {
         var mmDistanceZ = GetDistanceMM(GPIO3)
 
         //TO-DO: What happens when more then one PING ultrasonic is attached to Pi 3?
+        console.log('Measured distance for PING sensor #' + this._id + ??? + ' is ' + this._lastDataPoint + ' millimeters.') 
+        console.log('Measured distance for PING sensor #' + this._id + ??? + ' is ' + this._lastDataPoint + ' millimeters.') 
         console.log('Measured distance for PING sensor #' + this._id + ??? + ' is ' + this._lastDataPoint + ' millimeters.') 
       } 
     }, 200) //END SetInterval()

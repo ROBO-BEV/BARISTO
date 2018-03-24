@@ -1,3 +1,22 @@
+/**
+ * //???@module   SensorTemplate
+ * @file     PING_28015.ts
+ * @author   Blaze Sanders (@ROBO_BEV)
+ * @email    blaze@robobev.com
+ * @updated  23 MAR 2018
+ *
+ * @version 0.1
+ * @brief PING ultrasonic sensor for ROBO BEV BARISTO coffee kiosk
+ *
+ * @link https://www.robobev.com
+ * @link https://www.npmjs.com/package/rpio
+ *
+ * @section DESCRIPTION
+ *
+ * Yes we are programming a coffee robot in JAVA..script TEST
+ *
+ */
+
 import * as Typings from "@4th-law/typings"
 import * as rpio from "rpio"
 //import * as mathjs from "mathjs" DONT NEED THIS AT LUMENORA
@@ -86,7 +105,8 @@ export default class PING_28015 extends Typings.Sensor {
     rpio.open(pin, rpio.INPUT, rpio.PULL_DOWN)  //Calls rpio.init([options]) automatically
 
     //Start waiting for echo bounce back
-    var echoTime = rpio.poll(pin, PollPING)     //Is this going to read fast enough to get 5 mm resoltuion
+    var pingStartTime = Date.now()                             //Current time in milliseconds
+    var echoTime = rpio.poll(pin, PollPING, pingStartTime)     //Is this going to read fast enough to get 5 mm resoltuion
     while(echoTime != INVALID_STATE)
       rpio.usleep(1)                            //Pause to reduce CPU load
     return (echoTime * MM_SOUND_MSL_CONTSTANT)  //Varying depending on air density (MSL = Mean Sea Level)
@@ -99,17 +119,17 @@ export default class PING_28015 extends Typings.Sensor {
    * @note Interrupts aren't supported by the underlying hardware, so events may be missed during the 1ms poll window.  The best we can do is to print the current state after a event is detected.
    *
    * @param pin Raspberry Pi B+ combine INPUT & OUTPUT pin name constant (i.e. GPIO1, GPIO2, GPIO3) 
-   * 
+   * @param state State of ultrasonic audio pulse, used to calcalute distance
+   * @param startTime Time on system clock in milliseconds that this funcation was first called
    * @return Distance to closet object to resolution of 5 mm
    */
 
-  private PollPING(pin = GPOI1, state = PING_SENT): number{  
+  private PollPING(pin = GPOI1, state = PING_SENT, startTime = Date.now()): number{  
     if(state == PING_SENT)
-      //TO-DO: Start system timer not dependent on function scope
       return INVALID_STATE
     if(state == PING_RECIEVED)
-      //TO-DO: Stop system timer not dependent on function scope
-      return pingElaspsedTime  
+      var pingElapsedTime = Date.now() - startTime
+      return pingElapsedTime  
   }
 
 
