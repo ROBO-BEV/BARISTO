@@ -4,7 +4,7 @@ Author: Blaze Sanders Email: founders@robobev.com Skype: blaze.sanders Twitter: 
 
 Baristo kiosks are self-contained autonomous cashless coffee kiosks, with a prepaid coffee  cup and smartphone app. Check out https://www.robobev.com for more details in the coming months.
 
-This Git repo holds code for multiple CPUs that reside inside the Baristo Kiosk. It's broken down into the following five directories (***JAVA_Code, PLC_Code, SPIN_Code***). All three CPU must be running for Baristo kiosk to be fully functional and serve coffee. We look forward to community support to help push beverage robotics to the next level.
+This Git repo holds code for multiple CPUs that reside inside the Baristo Kiosk. It's broken down into the following five directories (***JAVA_Code, PLC_Code, SPIN_Code***). All three CPU must be running for Baristo kiosk to be fully functional and serve coffee. Please use https://google.github.io/styleguide/javaguide.html as the coding standard :)
 
 ***
 
