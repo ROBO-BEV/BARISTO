@@ -1,3 +1,8 @@
+/*Hi Balze, this comment is here to indicate that the changes I'm making are available to you
+~Garrett*/
+
+/*Alex brought it to my attention that Parallax (company that makes the PING sensor) has a proprietary language you must use to code their sensors called: BASIC Stamp*/
+
 /**
  * //???@module   SensorTemplate
  * @file     PING_28015.ts
@@ -106,10 +111,16 @@ export default class PING_28015 extends Typings.Sensor {
 
     //Start waiting for echo bounce back
     var pingStartTime = Date.now()                             //Current time in milliseconds
-    var echoTime = rpio.poll(pin, PollPING, pingStartTime)     //Is this going to read fast enough to get 5 mm resoltuion
-    while(echoTime != INVALID_STATE)
+    var echoTime = rpio.poll(pin, this.PollPING, pingStartTime)     //Is this going to read fast enough to get 5 mm resoltuion
+
+    /* the initial while() is commented out because INVALID_STATE is an undefined variable and as such the code throws an error whenever it is run or compiled
+	the uncommented while() is using echoTime as a bool, however it appears that echoTime is intended to be able to take on both bool and number data types, I'm not sure how to handle this
+	the while() loop itself never redefines echoTime, thus if the while() is an infinite loop if initiated; we probably either need to redefine echoTime in the loop or it may be that the loop 
+	needs to be relocated to run inside the rpio.poll callback function PollPING */ 
+    while(echoTime)
+    //while(echoTime != INVALID_STATE)
       rpio.usleep(1)                            //Pause to reduce CPU load
-    return (echoTime * MM_SOUND_MSL_CONTSTANT)  //Varying depending on air density (MSL = Mean Sea Level)
+    return (echoTime * MM_SOUND_MSL_CONSTANT)  //Varying depending on air density (MSL = Mean Sea Level)
   }
     
 
@@ -124,11 +135,12 @@ export default class PING_28015 extends Typings.Sensor {
    * @return Distance to closet object to resolution of 5 mm
    */
 
-  private PollPING(pin = GPOI1, state = PING_SENT, startTime = Date.now()): number{  
+  private PollPING(pin = GPIO1, state = PING_SENT, startTime = Date.now()): number{  
+    var INVALID_STATE = false // added this line in because the compile throws an error for undefined variables
     if(state == PING_SENT)
       return INVALID_STATE
     if(state == PING_RECIEVED)
-      var pingElapsedTime = Date.now() - startTime
+      var pingElapsedTime = Date.now() - startTime // pingElapsedTime is going to have a miniscule value that is below the threshold sensitivity of Date.now()
       return pingElapsedTime  
   }
 

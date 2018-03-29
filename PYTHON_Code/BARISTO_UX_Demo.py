@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 __author__ =  "Blaze Sanders"
-__email__ =   "founders@robobev.com"
+__email__ =   "blaze@robobev.com"
 __company__ = "Robotic Beverage Technologies Inc"
 __status__ =  "Development"
-__date__ =    "Late Updated: 2018-03-10"
-__doc__ =     "Control PowerPoint presentation programmaticaly with keyboard"
+__date__ =    "Late Updated: 2018-03-26"
+__doc__ =     "Control PowerPoint presentation programmaticaly with software keyboard presses"
 
 # @link https://docs.python.org/3/library/subprocess.html#replacing-os-popen-os-popen2-os-popen3
 # @link http://codeandlife.com/2012/07/29/arduino-and-raspberry-pi-serial-communication/
@@ -17,12 +17,12 @@ import sys, time, traceback, argparse
 # Allow control of GPIO pins on Raspberry Pi 3 and Pi Zero (i.e. I2C, SPI, TTL)
 import RPi.GPIO as GPIO
 
-# Allow use of both serial ports on the Pi 3 /ttyS0 nad /AAMM
+# Allow use of both serial ports on the Pi 3 /ttyS0 and /AAMM?? 
 #import serial
 
 # Allow control of all keyboard keys
-#import pynput.keyboard
-#from pynput.keyboard import Key, Controller
+import pynput.keyboard
+from pynput.keyboard import Key, Controller
 
 # Allow BASH command to be run  inside  Python 2.7 code like this file
 import subprocess
@@ -31,10 +31,10 @@ from  subprocess import Popen, PIPE
 # Allow demo to talk
 import BARISTO_Text2Speech
 
-PRODUCT_MODE = "PRODUCT"            # Final product configuration
-FIELD_MODE  = "FIELD"				# Non-Techanical repair person configuration
-TESTING_MODE = "TEST"               # Internal developer configuration
-DEBUG_STATEMENTS_ON = True      	# Toogle debug statements on and off for this python file
+PRODUCT_MODE = "PRODUCT"        # Final product configuration
+FIELD_MODE  = "FIELD" 		# Non-Techanical repair person configuration
+TESTING_MODE = "TEST"           # Internal developer configuration
+DEBUG_STATEMENTS_ON = True      # Toogle debug statements on and off for this python file
 
 #Pin value constants
 LOW =  0
@@ -61,31 +61,31 @@ NUM_INPUT_PINS = 4                 	#This software instance of Raspberry Pi can 
 
 #Hardware connected to the Raspberry Pi 3
 RFID_READ_PIN = 22            		#Raspberry Pi Connector J8 BCM 22 =  P15
-EMIC_SIN_PIN = 23					#Raspberry Pi Connector J8 BCM 23 = P16
-EMIC_SOUT_PIN = 24					#Raspberry Pi Connector J8 BCM 24 = P18
-COFFEE_READY_PIN = 24		   		#Raspberry Pi Connector J8 BCM 24 =  P17
-POLLY_LISTEN_PIN = 25		   		#Raspberry Pi Connector J8 BCM 25 =  P22
-EMIC_SPEAK_PIN = 27	   				#Raspberry Pi Connector J8 BCM 27 =  P12
+EMIC_SIN_PIN = 23			#Raspberry Pi Connector J8 BCM 23 = P16
+EMIC_SOUT_PIN = 24			#Raspberry Pi Connector J8 BCM 24 = P18
+COFFEE_READY_PIN = 24		   	#Raspberry Pi Connector J8 BCM 24 =  P17
+POLLY_LISTEN_PIN = 25		   	#Raspberry Pi Connector J8 BCM 25 =  P22
+EMIC_SPEAK_PIN = 27	   		#Raspberry Pi Connector J8 BCM 27 =  P12
 
 #UART pins in BCM mode are: 14, 15 /dev/ttyAMA0
 
 #Useful time.sleep() constants
-USER_DELAY_TIME  = 0.7				#Delay keyboard presses by 700 ms
-CPU_LOAD_DELAY = 0.02				#Delay 20 ms to reduce CPU load from reaching 100% during looping
+USER_DELAY_TIME  = 0.7			#Delay keyboard presses by 700 ms
+CPU_LOAD_DELAY = 0.02			#Delay 20 ms to reduce CPU load from reaching 100% during looping
 
 #Random constant for EMIC2 hardware and Amazon Web Service (AWS) Polly API
 EMIC2 = 222
 POLLY = 333
 
 #Pre-recorded .mp3 audio file
-HELLO_AUDIO = 1						#"Hello, Is this your first time with us?"
-PLACE_AUDIO = 2						#TO-DO:
-GOOD_AUDIO = 3						#TO-DO:
-COFFEE_AUDIO = 4						#TO-DO:
-READY_AUDIO = 5						#TO-DO:
-NUMBER_AUDIO = 6					#TO-DO:
-NOT_REGISTERED_AUDIO = 7				#TO-DO:
-DOWNLOAD_AUDIO = 8					#TO-DO: DELETE?
+HELLO_AUDIO = 1				#"Hello, Is this your first time with us?"
+PLACE_AUDIO = 2				#TO-DO:
+GOOD_AUDIO = 3				#TO-DO:
+COFFEE_AUDIO = 4			#TO-DO:
+READY_AUDIO = 5				#TO-DO:
+NUMBER_AUDIO = 6			#TO-DO:
+NOT_REGISTERED_AUDIO = 7		#TO-DO:
+DOWNLOAD_AUDIO = 8			#TO-DO: DELETE?
 
 # Create a command line parser
 parser = argparse.ArgumentParser(prog = "BARISTO V1", description = __doc__, add_help=True)

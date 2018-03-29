@@ -87,9 +87,9 @@ export default class PING_28015 extends Typings.Sensor {
         var mmDistanceZ = GetDistanceMM(GPIO3)
 
         //TO-DO: What happens when more then one PING ultrasonic is attached to Pi 3?
-        console.log('Measured distance for PING sensor #' + this._id + ??? + ' is ' + this._lastDataPoint + ' millimeters.') 
-        console.log('Measured distance for PING sensor #' + this._id + ??? + ' is ' + this._lastDataPoint + ' millimeters.') 
-        console.log('Measured distance for PING sensor #' + this._id + ??? + ' is ' + this._lastDataPoint + ' millimeters.') 
+        console.log('Measured distance for PING sensor #' + this._id + ' ??? ' + ' is ' + this._lastDataPoint + ' millimeters.') 
+        console.log('Measured distance for PING sensor #' + this._id + ' ??? ' + ' is ' + this._lastDataPoint + ' millimeters.') 
+        console.log('Measured distance for PING sensor #' + this._id + ' ??? ' + ' is ' + this._lastDataPoint + ' millimeters.') 
       } 
     }, 200) //END SetInterval()
 
