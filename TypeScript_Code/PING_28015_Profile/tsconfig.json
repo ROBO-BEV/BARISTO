@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "target": "ESNext",
+        "pretty": true,
+        "typeRoots": ["node_modules/@types", "node_modules/@4th-law", "./typings"]
+    },
+    "include": [
+        "**/*"
+    ],
+    "exclude": [
+        "node_modules/**/*",
+        "**/*.spec.ts"
+    ]
+}
