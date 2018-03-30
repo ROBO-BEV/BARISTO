@@ -5,12 +5,15 @@
   "main": "index.ts",
   "repository": "git@github.com:4th-law/profile_sensor_template.git",
   "author": "Hazmatius <alexb@4th-law.com>",
-  "dependencies": {},
+  "dependencies": {
+    "rpio": "^0.9.21"
+  },
   "devDependencies": {
     "@4th-law/typings-public": "^0.1.1",
     "@types/chai": "^4.1.0",
     "@types/config": "^0.0.33",
     "@types/mocha": "^2.2.46",
+    "@types/rpio": "^0.0.2",
     "@types/typescript": "^2.0.0",
     "chai": "^4.1.2",
     "codacy-coverage": "^2.0.3",
