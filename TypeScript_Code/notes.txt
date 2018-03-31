@@ -1,5 +1,0 @@
-https://docs.resin.io/learn/getting-started/raspberrypi3/nodejs/#adding-an-ssh-key
-https://docs.resin.io/learn/getting-started/raspberrypi3/nodejs/
-https://dashboard.resin.io/preferences/sshkeys
-
-https://crashcourse.housegordon.org/nano.html
