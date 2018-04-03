@@ -4,8 +4,13 @@ __author__ =  "Blaze Sanders"
 __email__ =   "blaze@robobev.com"
 __company__ = "Robotic Beverage Technologies Inc"
 __status__ =  "Development"
-__date__ =    "Late Updated: 2018-03-30"
+__date__ =    "Late Updated: 2018-04-02"
 __doc__ =     "Play predefine text using EMIC2 hardware or AWS Polly interface"
+
+# Allow control of all keyboard keys
+import pynput.keyboard
+from pynput.keyboard import Key, Controller
+
 
 #Pre-recorded .mp3 audio file
 HELLO_AUDIO = 1                                         #"Hello, Is this your first time with us?"
@@ -45,6 +50,7 @@ def emic2Interface(audioClipNum):
 			print("Good morning, Rosie. \n\n")
 	if (audioClipNum == COFFEE_AUDIO):
 		if DEBUG_STATEMENTS_ON:
+			keyboard = Controller()
 			print("Large caffe mocha with milk coming up \n\n")
 			for timer in range(10):
 				keyboard.type(abs(10-timer))
@@ -87,6 +93,7 @@ def awsPollyInterface(audioClipNum):
 			print("Good morning, Rosie.")
 	if (audioClipNum == COFFEE_AUDIO):
 		if DEBUG_STATEMENTS_ON:
+			keyboard = Controller()
 			print("Large caffe mocha with sugar coming up")
 			for timer in range(10):
 				keyboard.type(abs(10-timer))
@@ -98,6 +105,6 @@ def awsPollyInterface(audioClipNum):
 		if DEBUG_STATEMENTS_ON:
 			print("You said your number was 555-555-5555 correct?")
 	if (audioClipNum == NOT_REGISTERED_AUDIO):
-		if DEBUG_STATEMENTS_ON: 
+		if DEBUG_STATEMENTS_ON:
 			print("Your phone number is not registered with BARISTO.")
 			print("Please scan the QR code below to download BARISTO from the Google Play store and register with us.")

@@ -4,7 +4,7 @@ __author__ =  "Blaze Sanders"
 __email__ =   "blaze@robobev.com"
 __company__ = "Robotic Beverage Technologies Inc"
 __status__ =  "Development"
-__date__ =    "Late Updated: 2018-03-30"
+__date__ =    "Late Updated: 2018-04-02"
 __doc__ =     "Control PowerPoint presentation programmaticaly with keyboard"
 
 # @link https://docs.python.org/3/library/subprocess.html#replacing-os-popen-os-popen2-os-popen3
@@ -99,8 +99,8 @@ args = parser.parse_args()
 #  @return NOTHING
 def transitionToNextSlide():
 	# Press and release right arrow key
-	keyboard.press('Key.Right')
-	keyboard.release('Key.Right')
+	keyboard.press(Key.right)
+	keyboard.release(Key.right)
 
 ##
 #  @brief Transition PowerPoint to the previous slide using the left arrow key
@@ -110,8 +110,8 @@ def transitionToNextSlide():
 #  @return NOTHING
 def transitionToPreviousSlide():
 	# Press and release left arrow key
-	keyboard.press('Key.Left')
-	keyboard.release('Key.Left')
+	keyboard.press(Key.left)
+	keyboard.release(Key.left)
 
 ##
 #  @brief Generic text to speech function call
@@ -235,7 +235,7 @@ if __name__ == "__main__":
 
 			transitionToNextSlide()
 			say(EMIC2, Text2Speech.GOOD_AUDIO)
-			say(EMIC2, Text2Speech.LARGE_AUDIO)
+			say(EMIC2, Text2Speech.COFFEE_AUDIO)
 
 			while GPIO.input(COFFEE_READY_PIN) == HIGH:		#Loop until active LOW pin falls
 				time.sleep(CPU_LOAD_DELAY)
