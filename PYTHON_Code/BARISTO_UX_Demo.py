@@ -17,7 +17,7 @@ import sys, time, traceback, argparse
 # Allow control of GPIO pins on Raspberry Pi 3 and Pi Zero (i.e. I2C, SPI, TTL)
 import RPi.GPIO as GPIO
 
-# Allow use of both serial ports on the Pi 3 /ttyS0 and /AAMM?? 
+# Allow use of both serial ports on the Pi 3 /ttyS0 and /AAMM??
 #import serial
 
 # Allow control of all keyboard keys
@@ -34,7 +34,7 @@ import Text2Speech
 
 PRODUCT_MODE = "PRODUCT"        # Final product configuration
 FIELD_MODE  = "FIELD"		# Non-Techanical repair person configuration
-TESTING_MODE = "TEST"           # Internal developer configuration
+TESTING_MODE = "TESTING"        # Internal developer configuration
 DEBUG_STATEMENTS_ON = True      # Toogle debug statements on and off for this python file
 
 #Pin value constants
@@ -75,6 +75,8 @@ EMIC_SPEAK_PIN = 25	   		#Raspberry Pi Connector J8 BCM 25 =  P22
 #Useful time.sleep() constants
 USER_DELAY_TIME  = 0.7			#Delay keyboard presses by 700 ms
 CPU_LOAD_DELAY = 0.02			#Delay 20 ms to reduce CPU load from reaching 100% during looping
+DRAMATIC_DELAY = 3			#Delay 3 second to slow down UI in dramatic way
+RFID_LOOP_DELAY = 185		        #Delay ??  TODO REMOVE AFTER RFID TRANSCIEVER IS WORKING
 
 #Random constant for EMIC2 hardware and Amazon Web Service (AWS) Polly API
 EMIC2 = 222
@@ -82,13 +84,13 @@ POLLY = 333
 
 # Create a command line parser
 parser = argparse.ArgumentParser(prog = "BARISTO V1", description = __doc__, add_help=True)
-parser.add_argument("-i", "--piIP_Address", type=str, default="192.168.0.134", help="IPv4 address of the Mars Pi.")
+parser.add_argument("-i", "--piIP_Address", type=str, default="192.168.1.218", help="IPv4 address of the Saturn Pi.")
 parser.add_argument("-r", "--rx_Socket", type=int, default=30000, help="UDP port / socket number for connected Ethernet device.")
 parser.add_argument("-s", "--tx_Socket", type=int, default=30100, help="UDP port / socket number for connected Ethernet device.")
 parser.add_argument("-u", "--unit", type=str, default= FIELD_MODE, choices=[TESTING_MODE, FIELD_MODE, PRODUCT_MODE], help="Select boot up mode for BARISTO kiosk.")
 parser.add_argument("-t", "--trace", type=int, default=0, help="Program trace level.")
-parser.add_argument("-f", "--filename", type=str, default="sampleData.txt", help="File to be transmitted.") #cam0.0.jpeg
-parser.add_argument("-l", "--loop", type=int, default=0, help="Set to 1 to loop file.") 
+parser.add_argument("-f", "--filename", type=str, default="BARISTO.spin", help="Parallax firmware to be flashed.")
+parser.add_argument("-l", "--loop", type=int, default=0, help="Set to 1 to loop this driver program.")
 args = parser.parse_args()
 
 ##
@@ -206,8 +208,11 @@ if __name__ == "__main__":
 	check_call("clear",shell=True) #Clear warnings from terminal
 
 	keyboard.type('ROBO BEV BARISTO demo starting now...')
-	print('')
-	print('')
+	time.sleep(DRAMATIC_DELAY)
+
+	#Clear demo starting now text
+	check_call("clear",shell=True)
+	check_call("clear",shell=True)
 
 	try:
 
@@ -215,29 +220,40 @@ if __name__ == "__main__":
 			for i in range(2):
 				say(EMIC2, Text2Speech.HELLO_AUDIO)
 				say(EMIC2, Text2Speech.PLACE_AUDIO)
-				time.sleep(5)
-				check_call("clear",shell=True) #Clear previous user promt from terminal
+				time.sleep(DRAMATIC_DELAY)
 
- 			loopCounter = 0
+				#Clear previous user promt from terminal
+				check_call("clear",shell=True)
+				check_call("clear",shell=True)
+
+			loopCounter = 0
 			waitingOnUser = True
 			while not (GPIO.event_detected(RFID_READ_PIN)):	#Loop until active LOW pin falls
-				time.sleep(CPU_LOAD_DELAY)
-				if (loopCounter > CPU_LOAD_DELAY * 1000): #RFID tag was not read
+				if (loopCounter == 0):
 					say(EMIC2, Text2Speech.NUMBER_AUDIO)
-					time.sleep(2)
-					keyboard.type('Yes, that is my cell phone number.')
+				time.sleep(CPU_LOAD_DELAY)
+				#TODO NEXT 6 LINES OF CODE GET REMOVED WITH RFID TRANSIEVER WORKS
+				if (loopCounter > RFID_LOOP_DELAY): #RFID tag was not read
+					print("Yes, that is my cell phone number.")
 					print('')
 					print('')
-					time.sleep(2)
-					say(EMIC2, Text2Speech.NOT_REGISTERED_AUDIO)
 					break
 				loopCounter = loopCounter + 1
 
+			time.sleep(DRAMATIC_DELAY)
+			#Clear previous user promt from terminal
+			check_call("clear",shell=True)
+			check_call("clear",shell=True)
 			transitionToNextSlide()
 			say(EMIC2, Text2Speech.GOOD_AUDIO)
+
+			time.sleep(2*DRAMATIC_DELAY)
+			#Clear previous user promt from terminal
+			check_call("clear",shell=True)
+			check_call("clear",shell=True)
 			say(EMIC2, Text2Speech.COFFEE_AUDIO)
 
-			while GPIO.input(COFFEE_READY_PIN) == HIGH:		#Loop until active LOW pin falls
+			while not (GPIO.event_detected(COFFEE_READY_PIN)):	#Loop until active LOW pin falls
 				time.sleep(CPU_LOAD_DELAY)
 			transitionToNextSlide()
 			say(EMIC2, Text2Speech.READY_AUDIO)

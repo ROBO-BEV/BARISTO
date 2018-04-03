@@ -7,6 +7,9 @@ __status__ =  "Development"
 __date__ =    "Late Updated: 2018-04-02"
 __doc__ =     "Play predefine text using EMIC2 hardware or AWS Polly interface"
 
+# Useful system jazz
+import sys, time, traceback, argparse
+
 # Allow control of all keyboard keys
 import pynput.keyboard
 from pynput.keyboard import Key, Controller
@@ -24,8 +27,10 @@ DOWNLOAD_AUDIO = 8                                      #TO-DO: DELETE?
 
 DEBUG_STATEMENTS_ON = True    #Toogle debug statements on and off for this python file
 
-## TO-DO, TO-DO, TO-DO
-#  @brief  Plays predefined text stored on Pi 
+
+
+## TO-DO, TO-DO, TO-DO DEBUG print should not be copied and pasted between the emic2 and AWS Polly functions
+#  @brief  Plays predefined text stored on Pi
 #
 #  @param audioClipNum Audio clip to play from speaker
 #
@@ -53,8 +58,9 @@ def emic2Interface(audioClipNum):
 			keyboard = Controller()
 			print("Large caffe mocha with milk coming up \n\n")
 			for timer in range(10):
-				keyboard.type(abs(10-timer))
+				keyboard.type(str(abs(10-timer)))
 				keyboard.type("...")
+				time.sleep(1)
 	if (audioClipNum == READY_AUDIO):
 		if DEBUG_STATEMENTS_ON:
 			print("Your coffee is ready, Have a great day! \n\n")
@@ -96,8 +102,9 @@ def awsPollyInterface(audioClipNum):
 			keyboard = Controller()
 			print("Large caffe mocha with sugar coming up")
 			for timer in range(10):
-				keyboard.type(abs(10-timer))
+				keyboard.type(str(abs(10-timer)))
 				keyboard.type("...")
+				time.sleep(1)
 	if (audioClipNum == READY_AUDIO):
 		if DEBUG_STATEMENTS_ON:
 			print("Your coffee is ready, Have a great day!")
