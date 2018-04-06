@@ -92,8 +92,9 @@ PUB Main
     Term.dec(mmRangeYaxis)				' Print distance in decimal format
     Term.str(string(".0 millimeters"))                 
     Term.str(string("Y axis PING))) RECIEVED")) 
+    DemoStateMachine
 
-
+PRI DemoStateMachine
     IF mmRangeZaxis <= DISTANCE_TO_SMART_CUP_WITH_LID_ON
       Term.str(string("Your lid is still on my young apprentice, pleasse remove."))
       waitcnt(clkfreq*2 + cnt)                           ' Pause for 2 seconds
