@@ -1,3 +1,5 @@
+https://bweir.gitbooks.io/propelleride-docs/content/user/getting-started/installing-propelleride.html
+
 http://learn.parallax.com/tutorials/language/propeller-c/propeller-c-set-simpleide/raspberry-pi
 
 https://www.parallax.com/downloads/propelleride-raspberry-pi-spin-pasm-propbasic
