@@ -13,6 +13,7 @@
  */
 
 #include "ParallaxHardware.h"
+#include <unistd.h>  //Standard constant and types like usleep(), close(), and pause()
 
 void InitializeParallaxHardware(){
    serialPortNumber = 0;
@@ -43,7 +44,7 @@ void InitializeParallaxHardware(int portNum, int pPartNum, double opSys){
   parallaxPartNumber = pPartNum;
   operatingSystem = opSys;
 
-  //TO-DO: if(Baristo.DEBUG_STATEMENTS_ON) System.out.println("The port number you selected it not available, using port number 1.");
+  //TO-DO: if(Baristo.DEBUG_STATEMENTS_ON) printf("The port number you selected it not available, using port number 1.");
   //TO-DO: serialPortNumber = 0;
 
 }//END THREE PARAMETER ParallaxHardware(INT, INT, DOUBLE) CONSTRUCTOR
@@ -71,7 +72,7 @@ int IntializeUltrasonicSensors(int bootMode, double verNum, int parrallaxPartNum
 
       break;
     default;
-      if(Baristo.DEBUG_STATEMENTS_ON) System.out.println("You attempted to use an unsupported Parallax ultrasonic sensor.");
+      if(Baristo.DEBUG_STATEMENTS_ON) printf("You attempted to use an unsupported Parallax ultrasonic sensor.");
       return UNSUPPORTED_PARALLAX_PART_NUMBER;
   }//END SWTICH STATEMENT
 
@@ -83,37 +84,50 @@ int ScanForRFIDTag(){
   String tag = "0xFFFFFFFF";
   //TO-DO: tag = ReadTag();
   //TO-DO: SearchTagDatabase(tag);
-  //TO-DO: return InfiniFill.ERROR_CODE_???
+  //TO-DO: return BARISTO.ERROR_CODE_???
 
   return BARISTO.OK; //No errors connection made
 }//END ScanRFID() FUNCTION
 
 int BootUpChecks(int bootMode, double verNum){
 
-  if (bootMode == Baristo.PRODUCTION) Baristo.DEBUG_STATEMENTS_ON = false;
+  if (bootMode == BARISTO->PRODUCTION) BARISTO->DEBUG_STATEMENTS_ON = false;
   else BARSITO.DEBUG_STATEMENTS_ON = true;
     if (verNum > Baristo.CURRENT_KIOSK_HW_VERSION){
       if(Baristo.DEBUG_STATEMENTS_ON){
-        System.out.println("You attempted to run non-public and unsupported software.");
-        System.out.println("50 is coming for you :)");
+        printf("You attempted to run non-public and unsupported software.\n");
+        printf("50 cent is coming for you :)");
       }
     }
     else if (verNum < Baristo.LOWEST_SUPPORTED_KIOSK_HW_VERSION){
       if(DEBUG_STATEMENTS_ON){
-        System.out.println("You attempted to run old unsupported software.");
-        System.out.println("Please download newest open source code from https://github.com/ROBO-BEV/Baristo.");
+        printf("You attempted to run old unsupported software.");
+        printf("Please download newest open source code from https:\/\/github.com/ROBO-BEV/BARISTO");
       }
       return ERROR_CODE_OLD_VERSION_NUMBER;
   }
 }//END BootUpChecks() FUNCTION
 
 
-int GetDistance(){
-  int cmDist = -1;
-  for (int i = 0; i < NUM_OF_PING_SENSORS; i++){
-    ping_cm(hardwarePin);                 // Get cm distance from Ping)))
-  }//END FOR LOOP
-  print("cmDist = %d\n", cmDist);           // Display distance
-  pause(200);
+int[] GetDistance(int numOfSensors, int[] signalPins char units){
+
+  int distance = new int[MAX_NUM_OF_PING_SENSORS];
+  switch(units){
+    case 'M':		//Fall through capital M so that both cases are catch
+    case 'm':
+      for (int i = 0; i < numOfSensors; i++){
+        distance[i] = ping_cm(signalPins[i]);        // Get cm distance from PINGs connection to defined GPIO pins
+      }//END FOR LOOP
+      if(DEBUG_STATEMENTS_ON) printf("Distance measured by PING sensor#%d = %d centimeters \n", i, distance);
+      break;
+    case 'I':		//Fall through capital M so that both cases are catch
+    case 'i':
+      //TODO COPY CODE ABOVE FOR INCHES
+      break;
+    default:
+      assert(false); print("GetDistance() function was passed an invalid UNITS parameter");
+
+  }//END SWITCH
+
 }//END  GetDistance
 

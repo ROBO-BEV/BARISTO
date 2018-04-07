@@ -24,8 +24,8 @@
 //#include "ParallaxHardware.h"
 
 //SimpleIDE specific header files to flash the Parallax Propeller microcontroller
-//TODO #include "ping.h"          // Control the PING ultrasonic
-//TODO #include "simpletools.h"   //TODO ???
+#include "ping.h"          // Control the PING ultrasonic
+#include "simpletools.h"   //TODO ???
 
 #include <cassert>   //Used in UnitTest for functional testing
 #include <chrono>    //High accuracy microsecond timing in unit test
@@ -67,7 +67,7 @@ bool UnitTest(){
   int PING_SENSOR_1_SIG_PIN = 17;		//Pi 3 BCM 17 = GPIO 0
   int cmDist = -1;
   for(int loopNum=0; loopNum<10; loopNum++){
-    //TODO int cmDist = ping_cm(PING_SENSOR_1_SIG_PIN);//Get cm distance from Ping)))
+    int cmDist = ping_cm(PING_SENSOR_1_SIG_PIN);//Get cm distance from Ping)))
     printf("cmDist = %d\n", cmDist);            //Display distance
     sleep(0.5);                               	//Wait 1/2 second
   }//END FOR LOOP

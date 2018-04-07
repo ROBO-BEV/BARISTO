@@ -72,6 +72,8 @@ if __name__ == "__main__":
 
 	keyboard.type('Compiling BARISTO.c now...')
 	check_call("clear",shell=True)
+	
+        #Run g++ BARISTO.c -std=c++11 -o RUN_BARISTO bash command
 	check_call("g++ BARISTO.c -std=c++11 -o RUN_BARISTO",shell=True)
 
 	keyboard.type('Starting BARISTO kiosk now...')
