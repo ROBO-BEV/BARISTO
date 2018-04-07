@@ -1,3 +1,0 @@
-PYTHON CODE TO RUN:
-g++ BARISTO.c -std=c++11 -o RUN_BARISTO
-
