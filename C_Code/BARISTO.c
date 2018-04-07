@@ -1,8 +1,8 @@
 /**
- * @file     BARISTO.cpp
+ * @file     BARISTO.c
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@robobev.com
- * @updated  06 APRIL 2018
+ * @updated  07 APRIL 2018
  *
  * @version 0.1
  *
@@ -48,7 +48,7 @@ public static double RASPBERRY_STRETCH_2017_11 = 2017.11
 public static int ECHO =  0;
 public static int ECHO_DOT_1 = 1;
 public static int ECHO_DOT_2 = 2;
-//TO-DO: Other supported Amazon devices and move this to AmazonHardw$
+//TODO: Other supported Amazon devices? Move these constants to AmazonHardware.ts 
 
 //Kiosk Constants
 public static double CURRENT_KIOSK_HW_VERSION = 0.1;
@@ -59,11 +59,11 @@ public static int TESTING = 0;
 public static int OK = 0;
 public static int SERIAL_PORT_0 = 0;
 public static int SERIAL_PORT_1 = 1;
-public static final int SERIAL_PORT_2 = 2;
-public static final int SERIAL_PORT_3 = 3;
-public static final int SERIAL_PORT_4 = 4;
+public static int SERIAL_PORT_2 = 2;
+public static int SERIAL_PORT_3 = 3;
+public static int SERIAL_PORT_4 = 4;
 
-public static final int DO_OR_DO_NOT_THERE_IS_NO_TRY = -42;
+public static int DO_OR_DO_NOT_THERE_IS_NO_TRY = -42;
 
 
 int Main(){
