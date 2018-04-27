@@ -1,15 +1,16 @@
 /**
- * @file     cassert.h
+ * @file     RFIDData.h
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@robobev.com
- * @created  03 MAR 2018
- * @updated  07 APRIL 2018
+ * @created  27 APRIL 2018
+ * @updated  27 APRIL 2018
  *
  * @version 0.1
  *
- * @brief Main driver program for the robotic BARISTO coffee kiosk
+ * @brief RFID tag data management for the BARISTO coffee kiosk
  *
  * @link https://www.robobev.com
+ * @link htttps://www.upverter.com/??? TODO
  *
  * @section DESCRIPTION
  *

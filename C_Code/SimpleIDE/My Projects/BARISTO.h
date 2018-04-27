@@ -17,15 +17,15 @@
  * MIT license with lots of code easter eggs. Have fun!
  */
 
-//Like <iostream> but smaller file size
-#include <stdio.h>    //TODO smaller?
+//Standard C libraries 
+#include <stdio.h>    //Like <iostream> but smaller file size
 #include <stdbool.h>  //Needed to use bool variables in C code
 
-//Parallax Propeller specific functions
+//SimpleIDE specific header files to flash the Parallax Propeller microcontroller
 #include <propeller.h>
 
 //Error Code Constants
-#define NO_ERROR 0;                                  //No errors present
+#define NO_ERROR 0;                              //No errors present
 #define ERROR_CODE_NO_USB_DEVICE_CONNECTED -1;   //No USB (aka serial) devices connected
 #define ERROR_CODE_OLD_VERSION_NUMBER -2;        //Kiosk is not running the latest update
 #define ERROR_CODE_VERSION_NOT_RELEASED -3;      //Code running is not public yet, HACKER!

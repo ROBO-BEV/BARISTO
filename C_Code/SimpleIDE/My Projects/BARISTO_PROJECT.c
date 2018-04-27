@@ -15,51 +15,55 @@
  *
  * MIT license with lots of code easter eggs. Have fun!
  *
- * Compiled using "g++ BARISTO.c -std=c++11 -o RUN_BARISTO"
  */
 
 //Robotic Beverage Technology Inc specific header files
 #include "BARISTO.h"
-
-//SimpleIDE specific header files to flash the Parallax Propeller microcontroller
-#include "simpletools.h"   //TODO ???
-#include "ping.h"          //Control the PING ultrasonic or LASER distance sensor
-#include "fdserial.h"      //Contrrol Serial RFID Card Reader.
-#include "mstimer.h"       //TODO High accuracy millisecond timing in unit test
-#include "simplei2c.h"     //
-
-//#include <assert.h>   //Used in UnitTest for functional testing
+#include "RFIDData.h"
 //TODO FIND SOURCE ONLINE #include <chrono.h>    //High accuracy microsecond timing in unit test
 
-#include <unistd.h>  //Standard constant and types like usleep(), close(), and pause()
+//SimpleIDE specific header files to flash the Parallax Propeller microcontroller
+#include "simpletools.h"  //TODO ???
+#include "ping.h"         //Control the PING ultrasonic or LASER distance sensor
+#include "rfidser.h"      //Contrrol Serial RFID Card Reader.
+#include "mstimer.h"      //TODO High accuracy millisecond timing in unit test
+#include "simplei2c.h"    //
+
+//Standard C libraries  
+#include <unistd.h>       //Standard constant and types like usleep(), close(), and pause()
+#include <stdlib.h>       //Used to convert Strings to Integers and TODO 
 
 //Global Variables
-extern bool DEBGUG_STATEMENTS_ON = true;  //Quick ON-OFF Toggle of Debug Statements
-extern int MAX_ERROR_CODES = 10;          //Traceback error array size
 extern int errorNum = 0;      			         //Internally used index for errorCode array
-i2c *eeBus;                               // I2C bus ID \
-rfidser *RFID_Scanner;
 
 //Global Constants
-static int PRODUCTION = 2;  //volatile?
-
+extern bool DEBGUG_STATEMENTS_ON = true;  //Quick ON-OFF Toggle of Debug Statements
+extern unsigned int MAX_ERROR_CODES = 10;          //Traceback error array size
+extern unsigned int MCU_SERIAL_PIN = 1;          //TODO Update to match Upverter
+extern unsigned int RFID_ENABLE_PIN = 2;         //TODO Update to match Upverter
+extern unsigned int TESTING_MODE = 0;
+extern unsigned int FIELD_MODE = 1;
+extern unsigned int PRODUCTION_MODE = 2;
  
 int main(int argc, char *argv[])
 {
   int errorCode[MAX_ERROR_CODES];        //Runtime traceback error array  
+  i2c *eeBus;                            // I2C bus ID
+  rfidser *RFID_Scanner;
+
   printf("Starting %s\n", argv[0]);      //Command line argument zero is the command name
-  int bootUpMode = int(argv[1]);
+  int bootUpMode = atoi(argv[1]);
   switch(bootUpMode)
   {
-    case 0:
+    case 0: //TESTING_MODE
       printf("IN TESTING MODE");
-      int testOK = UnitTest();
+      int testOK = UnitTest(*RFID_Scanner);
       break;
-    case 1:
+    case 1: //FIELD_MODE
       printf("IN FIELD MODE");
       
       break;
-    case PRODUCTION:
+    case 2: //PRODUCTION_MODE
       printf("IN PRODUCTION MODE");
       
       break;
@@ -70,15 +74,13 @@ int main(int argc, char *argv[])
 
   //TODO:
 
-  return 0;
+  return OK;
 }
 
 //See BARISTO.h for further documentation on the following PUBLIC funstions:
 
-int UnitTest(){
+int UnitTest(rfidser *RFID_Scanner){
 /*
-  assert(true);
-  assert(!false);
 
   time_t timer;
   time(&timer);
@@ -94,16 +96,22 @@ int UnitTest(){
   for(int loopNum=0; loopNum<10; loopNum++){
     int cmDist = ping_cm(PING_SENSOR_1_SIG_PIN);//Get cm distance from Ping)))
     printf("cmDist = %d\n", cmDist);            //Display distance
-    sleep(0.5);                               	//Wait 1/2 second
+    sleep(500);                               	 //Wait 1/2 second
   }//END FOR LOOP
-
-
-  int RFID_1_SERIAL_PIN = ??;
-  int tag = -1;
+ 
+  RFID_Scanner = rfid_open(MCU_SERIAL_PIN, RFID_ENABLE_PIN);
+  char *tag =  rfid_get(RFID_Scanner, 200);    //Attempt to scan RFID every 200 ms
   
-  RFID_Scanner = rfid_open(MCU_SERIAL_PIN_0, RFID_1_ENABLE_PIN)
-  
-  return 1;
+  if(!strcmp(tag, "timed out"))             // Timed out?
+    if(DEBGUG_STATEMENTS_ON) print("No smart cup RFID tag scanned");
+  else if(!strcmp(tag, "70006E0299"))       // Round card ID match?
+    if(DEBGUG_STATEMENTS_ON) print("Good Morning Rosie");
+  else if(!strcmp(tag, "0200822A14"))       // Rectangle card ID match?
+    if(DEBGUG_STATEMENTS_ON) print("Good Morning Blaze");
+  else                                      // No matches?
+    print("New RFID tag with ID #%s scanned. \n", tag);               //   print ID.
+        
+  return OK;
 }//END UnitTest() FUNCTION
 
 //See BARISTO.h for further documentation on the following PRIVATE funstions:
