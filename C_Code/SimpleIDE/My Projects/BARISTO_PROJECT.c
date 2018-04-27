@@ -3,11 +3,11 @@
  * @author   Blaze Sanders (@ROBO_BEV)
  * @email    blaze@robobev.com
  * @created  03 MAR 2018
- * @updated  07 APRIL 2018
+ * @updated  27 APRIL 2018
  *
  * @version 0.1
  *
- * @brief Main driver program for the robotic BARISTO coffee kiosk
+ * @brief Main driver program for the BARISTO robotic coffee kiosk
  *
  * @link https://www.robobev.com
  *
@@ -17,47 +17,38 @@
  *
  */
 
-//Robotic Beverage Technology Inc specific header files
+//Robotic Beverage Technology Inc hardware specific header files
 #include "BARISTO.h"
-#include "RFIDData.h"
+#include "RFID.h"
 //TODO FIND SOURCE ONLINE #include <chrono.h>    //High accuracy microsecond timing in unit test
 
 //SimpleIDE specific header files to flash the Parallax Propeller microcontroller
 #include "simpletools.h"  //TODO ???
 #include "ping.h"         //Control the PING ultrasonic or LASER distance sensor
-#include "rfidser.h"      //Contrrol Serial RFID Card Reader.
+#include "rfidser.h"      //TODO MOVE TO BARISTO.h Control Serial RFID Card Reader.
 #include "mstimer.h"      //TODO High accuracy millisecond timing in unit test
-#include "simplei2c.h"    //
+#include "simplei2c.h"    //Easy to use I2C library to communicate with sensors 
 
-//Standard C libraries  
+//Standard C Libraries  
 #include <unistd.h>       //Standard constant and types like usleep(), close(), and pause()
 #include <stdlib.h>       //Used to convert Strings to Integers and TODO 
-
-//Global Variables
-extern int errorNum = 0;      			         //Internally used index for errorCode array
-
-//Global Constants
-extern bool DEBGUG_STATEMENTS_ON = true;  //Quick ON-OFF Toggle of Debug Statements
-extern unsigned int MAX_ERROR_CODES = 10;          //Traceback error array size
-extern unsigned int MCU_SERIAL_PIN = 1;          //TODO Update to match Upverter
-extern unsigned int RFID_ENABLE_PIN = 2;         //TODO Update to match Upverter
-extern unsigned int TESTING_MODE = 0;
-extern unsigned int FIELD_MODE = 1;
-extern unsigned int PRODUCTION_MODE = 2;
+//TODO FIND SOURCE ONLINE #include <cassert>
  
 int main(int argc, char *argv[])
 {
-  int errorCode[MAX_ERROR_CODES];        //Runtime traceback error array  
-  i2c *eeBus;                            // I2C bus ID
-  rfidser *RFID_Scanner;
+  int errorCode[MAX_ERROR_CODES];     //Runtime traceback error array  
+  int errorNum = 0;                   //Internally used index for errorCode array
+  i2c *eeBus;                         //I2C bus ID
+  rfidser *RFID_Transceiver;          //RFID transciever 
 
-  printf("Starting %s\n", argv[0]);      //Command line argument zero is the command name
+  printf("Starting %s\n", argv[0]);   //Command line argument zero is the command name
   int bootUpMode = atoi(argv[1]);
   switch(bootUpMode)
   {
     case 0: //TESTING_MODE
       printf("IN TESTING MODE");
-      int testOK = UnitTest(*RFID_Scanner);
+      return UnitTest1(RFID_Transceiver);
+      return UnitTest2();
       break;
     case 1: //FIELD_MODE
       printf("IN FIELD MODE");
@@ -69,38 +60,17 @@ int main(int argc, char *argv[])
       break;
     default: 
       printf("WTF MATE. FIRE THE MISSILES!"); 
-  }//END SWITCH    
+  }//END SWITCH   
   
-
-  //TODO:
-
   return OK;
 }
 
 //See BARISTO.h for further documentation on the following PUBLIC funstions:
 
-int UnitTest(rfidser *RFID_Scanner){
-/*
-
-  time_t timer;
-  time(&timer);
-  struct tm UTC_minus_8_Time;
-  int START_OF_YEAR_EPOCH = 1900; //Start of Unix Network Time Protocol epoch. This code will roll over At 06:28:1$
-
-  //TODO AFTER <Chrono> #included auto start = std::chrono::high_resolution_clock::now(); //Start timer on this line of code
-
-  usleep(1000000);				//Wait 1 second
-*/
-  int PING_SENSOR_1_SIG_PIN = 17;		//Pi 3 BCM 17 = GPIO 0
-  int cmDist = -1;
-  for(int loopNum=0; loopNum<10; loopNum++){
-    int cmDist = ping_cm(PING_SENSOR_1_SIG_PIN);//Get cm distance from Ping)))
-    printf("cmDist = %d\n", cmDist);            //Display distance
-    sleep(500);                               	 //Wait 1/2 second
-  }//END FOR LOOP
- 
-  RFID_Scanner = rfid_open(MCU_SERIAL_PIN, RFID_ENABLE_PIN);
-  char *tag =  rfid_get(RFID_Scanner, 200);    //Attempt to scan RFID every 200 ms
+int UnitTest1(rfidser *RFID_Transceiver){
+  
+  RFID_Transceiver = rfid_open(MCU_SERIAL_PIN, RFID_ENABLE_PIN);
+  char *tag =  rfid_get(RFID_Transceiver, 200);    //Attempt to scan RFID every 200 ms
   
   if(!strcmp(tag, "timed out"))             // Timed out?
     if(DEBGUG_STATEMENTS_ON) print("No smart cup RFID tag scanned");
@@ -112,9 +82,30 @@ int UnitTest(rfidser *RFID_Scanner){
     print("New RFID tag with ID #%s scanned. \n", tag);               //   print ID.
         
   return OK;
-}//END UnitTest() FUNCTION
+}//END UnitTest1() FUNCTION
 
-//See BARISTO.h for further documentation on the following PRIVATE funstions:
+int UnitTest2(){
+
+  time_t timer;
+  time(&timer);
+  struct tm UTC_minus_8_Time;
+  int START_OF_YEAR_EPOCH = 1900; //Start of Unix Network Time Protocol epoch. This code will roll over At 06:28:1$
+
+  //TODO AFTER <Chrono> #included auto start = std::chrono::high_resolution_clock::now(); //Start timer on this line of code
+
+  usleep(1000000);				//Wait 1 second
+
+  int cmDist[3] = {UNDEFINED, UNDEFINED, UNDEFINED};
+  for(int loopNum=0; loopNum<10; loopNum++){
+    for(int axisNum=0; axisNum<3; axisNum++){
+      cmDist[axisNum] = ping_cm(PING_SENSOR_0_SIG_PIN+axisNum);     //Get cm distance from Ping)))
+      printf("cmDist#%d = %d\n", axisNum, cmDist[axisNum]);         //Display distance
+    }//END INNER FOR LOOP      
+    sleep(500);                               	                     //Wait 1/2 second
+  }//END OUTER FOR LOOP
+}//END UnitTest2() FUNCTION
+
+
 
 
 /*

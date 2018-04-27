@@ -1,0 +1,1 @@
+Hidden CMM directory (only viewable on local repo / not GitHub) has files to program Parallax Propeller MCU .binary and .elf
