@@ -17,6 +17,9 @@
  * MIT license with lots of code easter eggs. Have fun!
  */
 
+#ifndef BARISTO_H
+#define BARISTO_H
+
 //SimpleIDE specific header files to flash the Parallax Propeller microcontroller
 #include "rfidser.h"      //Contrrol Serial RFID Transceiver
 
@@ -38,9 +41,9 @@ extern bool DEBGUG_STATEMENTS_ON = true;  //Quick ON-OFF Toggle of Debug Stateme
 extern int MCU_SERIAL_PIN = 1;            
 extern int RFID_ENABLE_PIN = 2;           
 //PING signal pins should be three successive integers to improve code performance  
-extern int PING_SENSOR_0_SIG_PIN = 17;    //Pi 3 BCM 17 = GPIO 0 
-extern int PING_SENSOR_1_SIG_PIN = 18;    //Pi 3 BCM ?? = GPIO 0
-extern int PING_SENSOR_2_SIG_PIN = 19;    //Pi 3 BCM ?? = GPIO 0
+extern int PING_SENSOR_0_SIG_PIN = 0;    //Pi 3 BCM 17 = GPIO 0 
+extern int PING_SENSOR_1_SIG_PIN = 1;    //Pi 3 BCM ?? = GPIO 0
+extern int PING_SENSOR_2_SIG_PIN = 2;    //Pi 3 BCM ?? = GPIO 0
 
 //Error Code Constants
 extern unsigned int MAX_ERROR_CODES = 10; //Traceback error array size
@@ -87,6 +90,8 @@ extern unsigned int MAX_ERROR_CODES = 10; //Traceback error array size
 
 int UnitTest1(rfidser *RFID_Transceiver);
 int UnitTest2();
+
+#endif 
 
 /*
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐

@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
   switch(bootUpMode)
   {
     case 0: //TESTING_MODE
-      printf("IN TESTING MODE");
-      return UnitTest1(RFID_Transceiver);
+      print("IN TESTING MODE \n");
+      //return UnitTest1(RFID_Transceiver);
       return UnitTest2();
       break;
     case 1: //FIELD_MODE
@@ -92,16 +92,22 @@ int UnitTest2(){
   int START_OF_YEAR_EPOCH = 1900; //Start of Unix Network Time Protocol epoch. This code will roll over At 06:28:1$
 
   //TODO AFTER <Chrono> #included auto start = std::chrono::high_resolution_clock::now(); //Start timer on this line of code
-
+  
   usleep(1000000);				//Wait 1 second
-
+  while(1){
+    printf("TEST SOUND = %d \n", ping_cm(0));
+    sleep(5);
+    printf("TEST LASER = %d \n", ping_cm(1));
+    sleep(5);
+  }
+    
   int cmDist[3] = {UNDEFINED, UNDEFINED, UNDEFINED};
   for(int loopNum=0; loopNum<10; loopNum++){
     for(int axisNum=0; axisNum<3; axisNum++){
       cmDist[axisNum] = ping_cm(PING_SENSOR_0_SIG_PIN+axisNum);     //Get cm distance from Ping)))
       printf("cmDist#%d = %d\n", axisNum, cmDist[axisNum]);         //Display distance
     }//END INNER FOR LOOP      
-    sleep(500);                               	                     //Wait 1/2 second
+    sleep(0.5);                               	                     //Wait 1/2 second
   }//END OUTER FOR LOOP
 }//END UnitTest2() FUNCTION
 
