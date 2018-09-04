@@ -1,3 +1,5 @@
+#http://effbot.org/tkinterbook/tkinter-hello-again.htm
+
 from tkinter import *
 
 class BARISTO_KIOSK_0:
